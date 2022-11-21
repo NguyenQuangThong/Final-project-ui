@@ -1,13 +1,45 @@
 import { Link } from 'react-router-dom';
 function Header() {
+  let a = localStorage.getItem('token');
+  let button;
+  let logout = () => {
+    localStorage.clear();
+    window.location.href = '/';
+  };
+  if (a == null)
+    button = (
+      <>
+        <Link className="btn btn-success" role="button" to="/login">
+          Sign in
+        </Link>
+        <Link className="btn btn-success" role="button" to="/signup">
+          Sign up
+        </Link>
+      </>
+    );
+  else
+    button = (
+      <>
+        <a href="/profile">
+          <img
+            src="https://image.shutterstock.com/image-photo/mountains-under-mist-morning-amazing-260nw-1725825019.jpg"
+            className="avatar"
+            alt="An avatar"
+          ></img>
+        </a>
+        <button className="btn btn-danger" onClick={logout}>
+          Log out
+        </button>
+      </>
+    );
   return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          Main
+          E-learning
         </Link>
         <button
-          class="navbar-toggler"
+          className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
@@ -15,23 +47,23 @@ function Header() {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">
-                Home
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a className="nav-link active" aria-current="page" href="/class">
+                Class
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
                 Link
               </a>
             </li>
-            <li class="nav-item dropdown">
+            <li className="nav-item dropdown">
               <a
-                class="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle"
                 href="#"
                 id="navbarDropdown"
                 role="button"
@@ -40,36 +72,34 @@ function Header() {
               >
                 Dropdown
               </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a class="dropdown-item" href="#">
+                  <a className="dropdown-item" href="#">
                     Action
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">
+                  <a className="dropdown-item" href="#">
                     Another action
                   </a>
                 </li>
                 <li>
-                  <hr class="dropdown-divider" />
+                  <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">
+                  <a className="dropdown-item" href="#">
                     Something else here
                   </a>
                 </li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
+            <li className="nav-item">
+              <a className="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
                 Disabled
               </a>
             </li>
           </ul>
-          <Link className="btn btn-success" role="button" to="/upload">
-            Abc
-          </Link>
+          {button}
         </div>
       </div>
     </nav>
