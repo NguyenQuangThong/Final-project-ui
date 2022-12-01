@@ -1,13 +1,14 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 function Class() {
-  let token = localStorage.getItem('token');
+  let user = JSON.parse(localStorage.getItem('user'));
   const [classes, setClasses] = useState([]);
   const [className, setClassName] = useState('');
-
-  const handleClassName = (e) => {
-    setClassName(e.target.value);
-  };
+  const [accounts, setAccounts] = useState([]);
+  const [classId, setClassId] = useState('');
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
@@ -18,39 +19,135 @@ function Class() {
     getAllClassrooms();
   }, []);
 
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
-  const createClassroom = (e) => {
-    e.preventDefault();
-    axios
-      .post(
-        'https://final-project1206.herokuapp.com/classrooms',
-        {
-          className: className,
-        },
-        config,
-      )
-      .then((response) => {
-        alert('Create class successfuly!');
-        window.location.replace('/');
-      })
-      .catch((err) => {
-        alert('Create new class failed!');
-      });
-  };
-
-  const classDetail = (e) => {
-    e.preventDefault();
-    localStorage.setItem('className', e.target.value);
-    window.location.replace('/class/detail');
-  };
-
-  if (token == null) window.location.replace('login');
+  if (user == null) window.location.href = '/login';
   else {
+    let token = JSON.parse(localStorage.getItem('token'));
+    let accountList = [];
+
+    const handleClassName = (e) => {
+      setClassName(e.target.value);
+    };
+
+    const getAllAccounts = async (e) => {
+      await axios
+        .get('https://final-project1206.herokuapp.com/accounts')
+        .then((response) => setAccounts(response.data));
+    };
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    const createClassroom = (e) => {
+      e.preventDefault();
+      axios
+        .post(
+          'https://final-project1206.herokuapp.com/classrooms',
+          {
+            className: className,
+          },
+          config,
+        )
+        .then((response) => {
+          alert('Create class successfuly!');
+          window.location.href = '/class';
+        })
+        .catch((err) => {
+          alert('Create new class failed!');
+        });
+    };
+
+    const classDetail = async (e) => {
+      e.preventDefault();
+      localStorage.setItem('classId', e.target.value);
+      await axios.get('https://final-project1206.herokuapp.com/classrooms/' + e.target.value).then((response) => {
+        localStorage.setItem('classroom', JSON.stringify(response.data));
+      });
+      console.log(JSON.parse(localStorage.getItem('classroom')));
+      window.location.href = '/class/detail';
+    };
+
+    const manageClass = async (e) => {
+      e.preventDefault();
+      localStorage.setItem('classroomId', e.target.value);
+      await axios.get('https://final-project1206.herokuapp.com/classrooms/' + e.target.value).then((response) => {
+        localStorage.setItem('classroom', JSON.stringify(response.data));
+      });
+      console.log(JSON.parse(localStorage.getItem('classroom')));
+      window.location.href = 'class/manage';
+    };
+
+    const addMember = (e) => {
+      e.preventDefault();
+      axios
+        .post('https://final-project1206.herokuapp.com/classrooms/' + e.target.value, {
+          accountId: accountList,
+        })
+        .then((response) => alert('Adding members succesfully!'))
+        .catch((err) => alert('Adding members failed!'));
+    };
+
+    const isChecked = (e) => {
+      if (e.target.checked) accountList.push(parseInt(e.target.value));
+      else accountList = accountList.filter((accountList) => accountList !== parseInt(e.target.value));
+      console.log(accountList);
+    };
+
+    const getAllMembers = (e) => {
+      e.preventDefault();
+      axios
+        .get('https://final-project1206.herokuapp.com/classrooms/' + classId)
+        .then((response) => setMembers(response.data.roomMembers))
+        .catch((err) => setMembers([]));
+    };
+
+    const removeMember = (e) => {
+      e.preventDefault();
+      axios
+        .delete('https://final-project1206.herokuapp.com/classrooms/remove/' + classId, {
+          data: {
+            accountId: accountList,
+          },
+        })
+        .then((response) => alert('Removing members succesfully!'))
+        .catch((err) => alert('Removing members failed!'));
+    };
     return (
       <>
+        {/* Add new members */}
+        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Add new member
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <ul class="list-group list-group-flush">
+                  {accounts.map((item, index) => {
+                    return (
+                      <li class="list-group-item">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
+                          <label class="form-check-label" for="flexCheckDefault">
+                            {item.username}
+                          </label>
+                        </div>
+                      </li>
+                    );
+                  })}
+                  <button onClick={addMember} value={classId}>
+                    Add
+                  </button>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Create new class */}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -89,6 +186,40 @@ function Class() {
             </div>
           </div>
         </div>
+
+        {/* Remove members */}
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Remove member
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <ul class="list-group list-group-flush">
+                  {members.map((item, index) => {
+                    return (
+                      <li class="list-group-item">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
+                          <label class="form-check-label" for="flexCheckDefault">
+                            {item.username}
+                          </label>
+                        </div>
+                      </li>
+                    );
+                  })}
+                  <button onClick={removeMember} value={classId}>
+                    Remove
+                  </button>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div style={{ marginTop: '10px' }}>
           <h4 style={{ display: 'inline-block' }}>Class:</h4>
           <button
@@ -107,9 +238,70 @@ function Class() {
               <div class="col-sm-3">
                 <div class="card">
                   <div class="card-body">
-                    <h5 class="card-title">{index}</h5>
+                    <h5 class="card-title" style={{ display: 'inline-block' }}>
+                      {index + 1}
+                    </h5>
+                    <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
+                      <a
+                        class=""
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        onClick={() => {
+                          setClassId(item.classroomId);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faEllipsis} />
+                      </a>
+
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            <button onClick={manageClass} value={item.classroomId}>
+                              Manage team
+                            </button>
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            className="dropdown-item"
+                            href="#exampleModal1"
+                            style={{ textDecoration: 'none' }}
+                            data-bs-target="#exampleModal1"
+                            data-bs-toggle="modal"
+                            onClick={() => {
+                              getAllAccounts();
+                            }}
+                          >
+                            Add new member
+                          </a>
+                        </li>
+
+                        <li>
+                          <a
+                            className="dropdown-item"
+                            href="#exampleModal2"
+                            style={{ textDecoration: 'none' }}
+                            data-bs-target="#exampleModal2"
+                            data-bs-toggle="modal"
+                            onClick={getAllMembers}
+                          >
+                            Remove member
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            Leave this team
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+
                     <p class="card-text">{item.className}</p>
-                    <button class="btn btn-primary" onClick={classDetail} value={item.className}>
+                    <p>Room owner: </p>
+
+                    <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
                       Go detail
                     </button>
                   </div>

@@ -8,13 +8,13 @@ function ClassDetailHeader({ children }) {
         <Header />
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-              General Chat Files
-            </a>
+            <div class="navbar-brand">
+              <a href="/class/detail">General</a> <a href="/class/file">Files</a>
+            </div>
           </div>
         </nav>
       </div>
-      <div>{children}</div>
+      <div style={{ marginBottom: 150 }}>{children}</div>
       <div>
         <ClassDetailFooter />
       </div>

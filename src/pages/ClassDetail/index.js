@@ -2,65 +2,177 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 function ClassDetail() {
-  let token = localStorage.getItem('token');
+  let user = JSON.parse(localStorage.getItem('user'));
+  let token = user.token;
   const [posts, setPosts] = useState([]);
-  let className = localStorage.getItem('className');
+  const [avatar, setAvatar] = useState('');
+  const [fatherId, setFatherId] = useState('');
+  const [fatherName, setFatherName] = useState('');
+  const [fatherComment, setFatherComment] = useState('');
+  const [reply, setReply] = useState('');
+  const [postId, setPostId] = useState('');
+  let childPosts = [];
+  let classroom = JSON.parse(localStorage.getItem('classroom'));
+  let className = classroom.className;
+
+  const getAvatar = (id) => {
+    axios
+      .get('https://final-project1206.herokuapp.com/accounts/' + id)
+      .then((response) => setAvatar(response.data.avatar));
+  };
+
+  const getFatherId = (id) => {
+    setFatherId(id);
+  };
+
+  const getPostId = (id) => {
+    setPostId(id);
+  };
+
+  const getFatherName = (name) => {
+    setFatherName(name);
+  };
+
+  const getFatherComment = (comment) => {
+    setFatherComment(comment);
+  };
+
+  const replyHandle = (e) => {
+    setReply(e.target.value);
+  };
+
+  const createReply = async (e) => {
+    e.preventDefault();
+    console.log(reply);
+    await axios
+      .post('https://final-project1206.herokuapp.com/child-posts', {
+        content: reply,
+        accountId: fatherId,
+        postId: postId,
+      })
+      .then((response) => alert('Reply success!'))
+      .catch((err) => alert('Reply failed!'));
+  };
+
   useEffect(() => {
-    const getAllPosts = async (e) => {
-      await axios.get('https://final-project1206.herokuapp.com/posts').then((response) => setPosts(response.data));
+    const getPostOfClass = async (e) => {
+      await axios
+        .get('https://final-project1206.herokuapp.com/posts/of/' + classroom.classroomId)
+        .then((response) => setPosts(response.data));
     };
-    getAllPosts();
+    getPostOfClass();
   }, []);
+
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
+
   return (
     <div>
-      <div style={{ textAlign: 'center' }}>
-        <h1>Welcome to Group_{className}</h1>
-        <h4>Try @mentioning the class name or student names to start a conversation.</h4>
-      </div>
-      {/* {posts.map((item, index) => {
-        return ( */}
-      <div className="blog-comment">
-        <ul class="comments">
-          <li class="clearfix">
-            <img src="https://bootdey.com/img/Content/user_1.jpg" class="avatar" alt="" />
-            <div class="post-comments">
-              <p class="meta">
-                Dec 18, 2014 <a href="#">JohnDoe</a> says :{' '}
-                <i class="pull-right">
-                  <a href="#">
-                    <small>Reply</small>
-                  </a>
-                </i>
-              </p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a sapien odio, sit amet</p>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Reply to {fatherName}: "{fatherComment}"
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </li>
-          <ul>
-            <li class="clearfix">
-              <img
-                src="https://vcdn-ngoisao.vnecdn.net/2022/08/05/tuikacm25pv1294-1659683618-165-4624-5789-1659683668_1200x0.jpg"
-                class="avatar"
-                alt=""
-              />
-              <div class="post-comments">
-                <p class="meta">
-                  Dec 18, 2014 <a href="#">JohnDoe</a> says :{' '}
-                  <i class="pull-right">
-                    <a href="#">
-                      <small>Reply</small>
-                    </a>
-                  </i>
-                </p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a sapien odio, sit amet</p>
-              </div>
-            </li>
-          </ul>
-        </ul>
-        {/* );
-      })} */}
+            <div class="modal-body">
+              <form class="signin-form" onSubmit={createReply}>
+                <div class="form-group mb-3">
+                  <label class="label" for="name">
+                    Your comment
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Type your comment..."
+                    value={reply}
+                    onChange={replyHandle}
+                    required
+                  />
+                </div>
+
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary rounded submit px-3">
+                    Submit
+                  </button>
+                  <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style={{ textAlign: 'center' }}>
+          <h1>Welcome to Group_{className}</h1>
+          <h4>Post your comment to start a conversation.</h4>
+        </div>
+        {posts.map((item, index) => {
+          childPosts = item.childPosts;
+          getAvatar(item.account.accountId);
+          return (
+            <div className="blog-comment">
+              <ul class="comments">
+                <li class="clearfix">
+                  <img src={'https://final-project1206.herokuapp.com/' + avatar} class="avatar" alt="" />
+                  <div class="post-comments">
+                    <p class="meta">
+                      {Date(item.timestamp)}
+                      <a href="#">{item.account.username}</a> says :
+                      <i class="pull-right">
+                        <a
+                          href="#exampleModal"
+                          data-bs-target="#exampleModal"
+                          data-bs-toggle="modal"
+                          onClick={() => {
+                            getFatherId(item.account.accountId);
+                            getPostId(item.postId);
+                            getFatherName(item.account.username);
+                            getFatherComment(item.content);
+                          }}
+                        >
+                          <small>Reply</small>
+                        </a>
+                      </i>
+                    </p>
+
+                    <p>{item.content}</p>
+                  </div>
+                </li>
+                {childPosts.map((item, index) => {
+                  getAvatar(item.account.accountId);
+                  if (item !== null) {
+                    return (
+                      <ul>
+                        <li class="clearfix">
+                          <img src={'https://final-project1206.herokuapp.com/' + avatar} class="avatar" alt="" />
+                          <div class="post-comments">
+                            <p class="meta">
+                              {Date(item.timestamp)} <a href="#">{item.account.username}</a> says :{' '}
+                              <i class="pull-right">
+                                <a href="#">
+                                  <small>Reply</small>
+                                </a>
+                              </i>
+                            </p>
+                            <p>{item.content}</p>
+                          </div>
+                        </li>
+                      </ul>
+                    );
+                  }
+                  return;
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

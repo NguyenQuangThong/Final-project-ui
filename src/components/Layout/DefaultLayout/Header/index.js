@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 function Header() {
-  let a = localStorage.getItem('token');
+  let user = JSON.parse(localStorage.getItem('user'));
+
   let button;
   let logout = () => {
     localStorage.clear();
     window.location.href = '/';
   };
-  if (a == null)
+  if (user == null)
     button = (
       <>
         <Link className="btn btn-success" role="button" to="/login">
@@ -17,21 +18,20 @@ function Header() {
         </Link>
       </>
     );
-  else
+  else {
+    let avatar = 'https://final-project1206.herokuapp.com/' + user.avatar;
     button = (
       <>
+        <h4 style={{ color: 'white' }}>Hi! {user.username} </h4>
         <a href="/profile">
-          <img
-            src="https://image.shutterstock.com/image-photo/mountains-under-mist-morning-amazing-260nw-1725825019.jpg"
-            className="avatar"
-            alt="An avatar"
-          ></img>
+          <img src={avatar} className="avatar" alt="An avatar"></img>
         </a>
         <button className="btn btn-danger" onClick={logout}>
           Log out
         </button>
       </>
     );
+  }
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">

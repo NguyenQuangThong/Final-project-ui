@@ -18,8 +18,8 @@ const Login = () => {
         password: password,
       })
       .then((response) => {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('username', response.data.accountResponse.username);
+        localStorage.setItem('user', JSON.stringify(response.data.accountResponse));
+        localStorage.setItem('token', JSON.stringify(response.data.token));
         alert('Login success');
         window.location.replace('/class');
       })
@@ -105,7 +105,7 @@ const Login = () => {
                 </form>
                 <p class="text-center">
                   Not a member?{' '}
-                  <a data-toggle="tab" href="#signup">
+                  <a data-toggle="tab" href="/signup">
                     Sign Up
                   </a>
                 </p>

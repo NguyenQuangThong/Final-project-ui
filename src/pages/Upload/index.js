@@ -1,4 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+
 function Upload() {
-  return <h2>This is upload page</h2>;
+  return (
+    <div>
+      <FontAwesomeIcon icon={faEllipsis} style={{ width: 10 }} />
+    </div>
+  );
 }
 export default Upload;
