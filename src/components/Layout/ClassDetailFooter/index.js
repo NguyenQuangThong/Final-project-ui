@@ -14,7 +14,7 @@ function ClassDetailFooter() {
 
   const newPost = async (e) => {
     e.preventDefault();
-    await axios.post('https://final-project1206.herokuapp.com/posts', {
+    await axios.post('http://localhost:8080/posts', {
       content: comment,
       accountId: userId,
       classroomId: classId,

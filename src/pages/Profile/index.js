@@ -21,12 +21,12 @@ function Profile() {
   };
 
   const getAccount = async (e) => {
-    await axios.get('https://final-project1206.herokuapp.com/accounts/' + userId).then((response) => {
+    await axios.get('http://localhost:8080/accounts/' + userId).then((response) => {
       localStorage.setItem('user', JSON.stringify(response.data));
     });
   };
 
-  let avatar = 'https://final-project1206.herokuapp.com/' + user.avatar;
+  let avatar = 'http://localhost:8080/' + user.avatar;
 
   const handleFullName = (e) => {
     setFullName(e.target.value);
@@ -42,7 +42,7 @@ function Profile() {
     data.append('fullName', fullName);
     data.append('avatar', content);
     axios
-      .put('https://final-project1206.herokuapp.com/accounts/' + userId, data, {
+      .put('http://localhost:8080/accounts/' + userId, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -63,7 +63,7 @@ function Profile() {
     if (newPassword !== confirmNewPassword) alert('Password does not match!');
     else {
       axios
-        .put('https://final-project1206.herokuapp.com/accounts/password/' + userId, {
+        .put('http://localhost:8080/accounts/password/' + userId, {
           oldPassword,
           newPassword,
         })

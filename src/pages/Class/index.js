@@ -12,9 +12,7 @@ function Class() {
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
-      await axios
-        .get('https://final-project1206.herokuapp.com/classrooms')
-        .then((response) => setClasses(response.data));
+      await axios.get('http://localhost:8080/classrooms').then((response) => setClasses(response.data));
     };
     getAllClassrooms();
   }, []);
@@ -28,9 +26,9 @@ function Class() {
       setClassName(e.target.value);
     };
 
-    const getAllAccounts = async (e) => {
+    const getMemberNotInClass = async (e) => {
       await axios
-        .get('https://final-project1206.herokuapp.com/accounts')
+        .get('http://localhost:8080/accounts/members/' + classId)
         .then((response) => setAccounts(response.data));
     };
 
@@ -42,7 +40,7 @@ function Class() {
       e.preventDefault();
       axios
         .post(
-          'https://final-project1206.herokuapp.com/classrooms',
+          'http://localhost:8080/classrooms',
           {
             className: className,
           },
@@ -60,7 +58,7 @@ function Class() {
     const classDetail = async (e) => {
       e.preventDefault();
       localStorage.setItem('classId', e.target.value);
-      await axios.get('https://final-project1206.herokuapp.com/classrooms/' + e.target.value).then((response) => {
+      await axios.get('http://localhost:8080/classrooms/' + e.target.value).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -68,9 +66,7 @@ function Class() {
     };
 
     const manageClass = async (e) => {
-      e.preventDefault();
-      localStorage.setItem('classroomId', e.target.value);
-      await axios.get('https://final-project1206.herokuapp.com/classrooms/' + e.target.value).then((response) => {
+      await axios.get('http://localhost:8080/classrooms/' + classId).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -79,12 +75,15 @@ function Class() {
 
     const addMember = (e) => {
       e.preventDefault();
-      axios
-        .post('https://final-project1206.herokuapp.com/classrooms/' + e.target.value, {
-          accountId: accountList,
-        })
-        .then((response) => alert('Adding members succesfully!'))
-        .catch((err) => alert('Adding members failed!'));
+      if (accountList.length === 0) alert('Please select member to add!');
+      else {
+        axios
+          .post('http://localhost:8080/classrooms/' + e.target.value, {
+            accountId: accountList,
+          })
+          .then((response) => alert('Adding members succesfully!'))
+          .catch((err) => alert('Adding members failed!'));
+      }
     };
 
     const isChecked = (e) => {
@@ -96,21 +95,37 @@ function Class() {
     const getAllMembers = (e) => {
       e.preventDefault();
       axios
-        .get('https://final-project1206.herokuapp.com/classrooms/' + classId)
+        .get('http://localhost:8080/classrooms/' + classId)
         .then((response) => setMembers(response.data.roomMembers))
         .catch((err) => setMembers([]));
     };
 
     const removeMember = (e) => {
       e.preventDefault();
-      axios
-        .delete('https://final-project1206.herokuapp.com/classrooms/remove/' + classId, {
-          data: {
-            accountId: accountList,
-          },
-        })
-        .then((response) => alert('Removing members succesfully!'))
-        .catch((err) => alert('Removing members failed!'));
+      if (accountList.length === 0) alert('Please select member to remove!');
+      else {
+        axios
+          .delete('http://localhost:8080/classrooms/remove/' + classId, {
+            data: {
+              accountId: accountList,
+            },
+          })
+          .then((response) => alert('Removing members succesfully!'))
+          .catch((err) => alert('Removing members failed!'));
+      }
+    };
+
+    const deleteClass = (e) => {
+      e.preventDefault();
+      if (window.confirm('Are you sure you want to delete this class?')) {
+        axios
+          .delete('http://localhost:8080/classrooms/' + classId)
+          .then((response) => {
+            alert('Delete class successfully!');
+            window.location.reload();
+          })
+          .catch((err) => alert('Delete class failed!'));
+      }
     };
     return (
       <>
@@ -257,10 +272,14 @@ function Class() {
 
                       <ul class="dropdown-menu">
                         <li>
-                          <a class="dropdown-item" href="#">
-                            <button onClick={manageClass} value={item.classroomId}>
-                              Manage team
-                            </button>
+                          <a
+                            class="dropdown-item"
+                            href="#"
+                            onClick={() => {
+                              manageClass();
+                            }}
+                          >
+                            Manage team
                           </a>
                         </li>
                         <li>
@@ -271,7 +290,7 @@ function Class() {
                             data-bs-target="#exampleModal1"
                             data-bs-toggle="modal"
                             onClick={() => {
-                              getAllAccounts();
+                              getMemberNotInClass();
                             }}
                           >
                             Add new member
@@ -291,6 +310,11 @@ function Class() {
                           </a>
                         </li>
                         <li>
+                          <a class="dropdown-item" href="#" onClick={deleteClass}>
+                            Delete this class
+                          </a>
+                        </li>
+                        <li>
                           <a class="dropdown-item" href="#">
                             Leave this team
                           </a>
@@ -299,7 +323,7 @@ function Class() {
                     </div>
 
                     <p class="card-text">{item.className}</p>
-                    <p>Room owner: </p>
+                    <p>Room owner: {item.roomOwner.username}</p>
 
                     <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
                       Go detail

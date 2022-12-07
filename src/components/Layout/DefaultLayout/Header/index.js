@@ -19,7 +19,7 @@ function Header() {
       </>
     );
   else {
-    let avatar = 'https://final-project1206.herokuapp.com/' + user.avatar;
+    let avatar = 'http://localhost:8080/' + user.avatar;
     button = (
       <>
         <h4 style={{ color: 'white' }}>Hi! {user.username} </h4>

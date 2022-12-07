@@ -24,7 +24,7 @@ function Signup() {
       alert('Password and confirm password does not match!');
     } else {
       axios
-        .post('https://final-project1206.herokuapp.com/signup', {
+        .post('http://localhost:8080/signup', {
           username: username,
           password: password,
           fullName: fullName,

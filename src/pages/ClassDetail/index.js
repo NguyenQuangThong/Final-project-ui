@@ -16,9 +16,7 @@ function ClassDetail() {
   let className = classroom.className;
 
   const getAvatar = (id) => {
-    axios
-      .get('https://final-project1206.herokuapp.com/accounts/' + id)
-      .then((response) => setAvatar(response.data.avatar));
+    axios.get('http://localhost:8080/accounts/' + id).then((response) => setAvatar(response.data.avatar));
   };
 
   const getFatherId = (id) => {
@@ -45,9 +43,9 @@ function ClassDetail() {
     e.preventDefault();
     console.log(reply);
     await axios
-      .post('https://final-project1206.herokuapp.com/child-posts', {
+      .post('http://localhost:8080/child-posts', {
         content: reply,
-        accountId: fatherId,
+        accountId: user.accountId,
         postId: postId,
       })
       .then((response) => alert('Reply success!'))
@@ -57,7 +55,7 @@ function ClassDetail() {
   useEffect(() => {
     const getPostOfClass = async (e) => {
       await axios
-        .get('https://final-project1206.herokuapp.com/posts/of/' + classroom.classroomId)
+        .get('http://localhost:8080/posts/of/' + classroom.classroomId)
         .then((response) => setPosts(response.data));
     };
     getPostOfClass();
@@ -114,16 +112,17 @@ function ClassDetail() {
           <h4>Post your comment to start a conversation.</h4>
         </div>
         {posts.map((item, index) => {
+          var ts = new Date(item.timestamp);
           childPosts = item.childPosts;
           getAvatar(item.account.accountId);
           return (
             <div className="blog-comment">
               <ul class="comments">
                 <li class="clearfix">
-                  <img src={'https://final-project1206.herokuapp.com/' + avatar} class="avatar" alt="" />
+                  <img src={'http://localhost:8080/' + avatar} class="avatar" alt="" />
                   <div class="post-comments">
                     <p class="meta">
-                      {Date(item.timestamp)}
+                      {ts.toUTCString()}
                       <a href="#">{item.account.username}</a> says :
                       <i class="pull-right">
                         <a
@@ -151,7 +150,7 @@ function ClassDetail() {
                     return (
                       <ul>
                         <li class="clearfix">
-                          <img src={'https://final-project1206.herokuapp.com/' + avatar} class="avatar" alt="" />
+                          <img src={'http://localhost:8080/' + avatar} class="avatar" alt="" />
                           <div class="post-comments">
                             <p class="meta">
                               {Date(item.timestamp)} <a href="#">{item.account.username}</a> says :{' '}

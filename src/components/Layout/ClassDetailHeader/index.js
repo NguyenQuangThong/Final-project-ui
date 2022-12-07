@@ -9,7 +9,8 @@ function ClassDetailHeader({ children }) {
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
             <div class="navbar-brand">
-              <a href="/class/detail">General</a> <a href="/class/file">Files</a>
+              <a href="/class/detail">General</a> <a href="/class/file">Files</a>{' '}
+              <a href="/class/meeting">Meeting now</a>
             </div>
           </div>
         </nav>
