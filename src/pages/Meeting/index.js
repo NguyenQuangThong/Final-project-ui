@@ -90,32 +90,46 @@ function Meeting() {
   //   useEffect(() => {
   //     const displayLocalStreamAndSignal = async ()
   //   })
-  const displayLocalStreamAndSignal = async (firstTime) => {
+  const disPlayLocalVideoStream = async (firstTime) => {
     console.log('Requesting local stream');
-    const localVideo = document.getElementById('localVideo');
-    let localStream;
+    const localVideo = document.getElementById('local');
+    let localVideoStream;
+
     try {
       // Capture local video & audio stream & set to local <video> DOM
       // element
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const videoStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
       });
+
+      // const screenStream = await navigator.mediaDevices.getDisplayMedia({
+      //   audio: true,
+      //   video: true,
+      // });
+
       console.log('Received local stream');
-      localVideo.srcObject = stream;
-      localStream = stream;
-      logVideoAudioTrackInfo(localStream);
+      localVideo.srcObject = videoStream;
+      localVideoStream = videoStream;
+      logVideoAudioTrackInfo(localVideoStream);
+      console.log('Local:' + videoStream);
+
+      // remoteScreen.srcObject = remoteScreenStream;
+      // remoteScreenStream = screenStream;
+      // logVideoAudioTrackInfo(remoteScreenStream);
+      // console.log('Remote:' + remoteScreen);
 
       // For first time, add local stream to peer connection.
       if (firstTime) {
         setTimeout(function () {
-          addLocalStreamToPeerConnection(localStream);
+          addLocalStreamToPeerConnection(localVideoStream);
+          // addLocalStreamToPeerConnection(remoteScreenStream);
         }, 2000);
       }
 
       // Send offer signal to signaling server endpoint.
       sendOfferSignal();
-      return stream;
+      // return stream;
     } catch (e) {
       alert(`getUserMedia() error: ${e.name}`);
       throw e;
@@ -140,11 +154,15 @@ function Meeting() {
    */
   function displayRemoteStream(e) {
     console.log('displayRemoteStream');
-    const remoteVideo = document.getElementById('remoteVideo');
+    const remoteVideo = document.getElementById('remote');
+    // const remoteScreen = document.getElementById('remoteScreen');
     if (remoteVideo.srcObject !== e.streams[0]) {
       remoteVideo.srcObject = e.streams[0];
       console.log('pc2 received remote stream');
     }
+    // if (remoteScreen.srcObject !== e.streams[0]) {
+    //   remoteScreen.srcObject = e.streams[0];
+    // }
   }
 
   /*
@@ -219,19 +237,19 @@ function Meeting() {
   }
 
   const turnOffCamera = (e) => {
-    document.getElementById('localVideo').captureStream().getVideoTracks()[0].enabled = false;
+    document.getElementById('local').captureStream().getVideoTracks()[0].enabled = false;
   };
 
   const turnOnCamera = (e) => {
-    document.getElementById('localVideo').captureStream().getVideoTracks()[0].enabled = true;
+    document.getElementById('local').captureStream().getVideoTracks()[0].enabled = true;
   };
 
   const turnOffMicro = (e) => {
-    document.getElementById('localVideo').captureStream().getAudioTracks()[0].enabled = false;
+    document.getElementById('local').captureStream().getAudioTracks()[0].enabled = false;
   };
 
   const turnOnMicro = (e) => {
-    document.getElementById('localVideo').captureStream().getAudioTracks()[0].enabled = true;
+    document.getElementById('local').captureStream().getAudioTracks()[0].enabled = true;
   };
 
   return (
@@ -248,33 +266,57 @@ function Meeting() {
         </h3>
       </div>
 
-      <div>
-        <h3 style={{ margin: 5 }}>Other Person</h3>
-        <video
-          style={{ width: '50vh', height: '50vh' }}
-          id="remoteVideo"
-          poster="https://img.icons8.com/fluent/48/000000/person-male.png"
-          autoPlay
-        ></video>
-      </div>
-
-      <div>
-        <h3 style={{ margin: 5 }}>You</h3>
-        <video
-          style={{ width: 'auto', height: '20vh' }}
-          id="localVideo"
-          poster="https://img.icons8.com/fluent/48/000000/person-male.png"
-          autoPlay
-          muted
-        ></video>
+      <div className="container">
+        <div className="row">
+          <div className="col" style={{ textAlign: 'center' }}>
+            <h3 style={{ margin: 5 }}>Other</h3>
+            <video
+              style={{ width: '50vh', height: '50vh' }}
+              id="remote"
+              poster="https://img.icons8.com/fluent/48/000000/person-male.png"
+              autoPlay
+            ></video>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col" style={{ textAlign: 'center' }}>
+            <div>
+              <h3 style={{ margin: 5 }}>You</h3>
+              <video
+                style={{ width: 'auto', height: '20vh' }}
+                id="local"
+                poster="https://img.icons8.com/fluent/48/000000/person-male.png"
+                autoPlay
+                muted
+              ></video>
+            </div>
+          </div>
+        </div>
       </div>
 
       <button
         onClick={() => {
-          displayLocalStreamAndSignal(true);
+          disPlayLocalVideoStream(true);
         }}
       >
-        Test
+        Call
+      </button>
+      <button
+        onClick={async () => {
+          let localVideoStream;
+          const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            audio: true,
+            video: true,
+          });
+
+          console.log('Received local stream');
+          localVideoStream = screenStream;
+          logVideoAudioTrackInfo(localVideoStream);
+          console.log('Local:' + screenStream);
+          addLocalStreamToPeerConnection(true);
+        }}
+      >
+        Share screen
       </button>
       <div>
         <button onClick={turnOffCamera}>Turn off camera</button>

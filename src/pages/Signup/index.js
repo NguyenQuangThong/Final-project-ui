@@ -6,6 +6,7 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const handleUserName = (e) => {
     setUserName(e.target.value);
   };
@@ -18,6 +19,9 @@ function Signup() {
   const handleFullName = (e) => {
     setFullName(e.target.value);
   };
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -28,15 +32,14 @@ function Signup() {
           username: username,
           password: password,
           fullName: fullName,
+          email: email,
         })
         .then((response) => {
           alert('Sign up success');
           window.location.replace('/');
         })
         .catch((err) => {
-          console.log(err);
-          console.log(err.response);
-          alert('Wrong credentials');
+          alert('Username has already taken!');
         });
     }
   };
@@ -71,7 +74,7 @@ function Signup() {
                 <form class="signin-form" onSubmit={handleSubmit}>
                   <div class="form-group mb-3">
                     <label class="label" for="name">
-                      Username
+                      Username(*)
                     </label>
                     <input
                       type="text"
@@ -95,8 +98,14 @@ function Signup() {
                     />
                   </div>
                   <div class="form-group mb-3">
+                    <label class="label" for="fullname">
+                      Email(*)
+                    </label>
+                    <input type="email" class="form-control" placeholder="Email" value={email} onChange={handleEmail} />
+                  </div>
+                  <div class="form-group mb-3">
                     <label class="label" for="password">
-                      Password
+                      Password(*)
                     </label>
                     <input
                       type="password"
@@ -109,7 +118,7 @@ function Signup() {
                   </div>
                   <div class="form-group mb-3">
                     <label class="label" for="password">
-                      Confirm password
+                      Confirm password(*)
                     </label>
                     <input
                       type="password"
@@ -122,20 +131,8 @@ function Signup() {
                   </div>
                   <div class="form-group">
                     <button type="submit" class="form-control btn btn-primary rounded submit px-3">
-                      Sign In
+                      Sign Up
                     </button>
-                  </div>
-                  <div class="form-group d-md-flex">
-                    <div class="w-50 text-left">
-                      <label class="checkbox-wrap checkbox-primary mb-0">
-                        Remember Me
-                        <input type="checkbox" checked />
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                    <div class="w-50 text-md-right">
-                      <a href="#">Forgot Password</a>
-                    </div>
                   </div>
                 </form>
               </div>

@@ -10,17 +10,21 @@ import ClassDetailHeader from '~/components/Layout/ClassDetailHeader';
 import ClassManage from '~/pages/ClassManage';
 import File from '~/pages/File';
 import Meeting from '~/pages/Meeting';
+import ForgotPassword from '~/pages/ForgotPassword';
+import ChangeForgotPassword from '~/pages/ForgotPassword/ChangeForgotPassword';
 const publicRoutes = [
   { path: '/', component: Home },
   { path: '/class', component: Class },
   { path: '/upload', component: Upload, layout: HeaderOnly },
   { path: '/login', component: Login, layout: null },
   { path: '/signup', component: Signup, layout: null },
-  { path: '/profile', component: Profile, layout: null },
+  { path: '/profile', component: Profile, layout: HeaderOnly },
   { path: '/class/detail', component: ClassDetail, layout: ClassDetailHeader },
   { path: '/class/manage', component: ClassManage },
   { path: '/class/file', component: File, layout: ClassDetailHeader },
   { path: '/class/meeting', component: Meeting, layout: ClassDetailHeader },
+  { path: '/forgot-password', component: ForgotPassword, layout: null },
+  { path: '/forgot-password/change', component: ChangeForgotPassword, layout: null },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

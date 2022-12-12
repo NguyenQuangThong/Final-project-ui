@@ -115,6 +115,22 @@ function Class() {
       }
     };
 
+    const leaveThisTeam = (e) => {
+      e.preventDefault();
+      if (window.confirm('Are you sure you want to leave this team?')) {
+        axios
+          .delete('http://localhost:8080/classrooms/remove/' + classId, {
+            data: {
+              accountId: [user.accountId],
+            },
+          })
+          .then((response) => {
+            window.location.href = '/class';
+          })
+          .catch((err) => alert('Some errors was found!'));
+      }
+    };
+
     const deleteClass = (e) => {
       e.preventDefault();
       if (window.confirm('Are you sure you want to delete this class?')) {
@@ -249,89 +265,110 @@ function Class() {
         </div>
         <div class="row container">
           {classes.map((item, index) => {
-            return (
-              <div class="col-sm-3">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title" style={{ display: 'inline-block' }}>
-                      {index + 1}
-                    </h5>
-                    <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
-                      <a
-                        class=""
-                        href="#"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        onClick={() => {
-                          setClassId(item.classroomId);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faEllipsis} />
-                      </a>
+            let element;
+            if (item.roomOwner.accountId === user.accountId)
+              element = (
+                <div>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      href="#exampleModal2"
+                      style={{ textDecoration: 'none' }}
+                      data-bs-target="#exampleModal2"
+                      data-bs-toggle="modal"
+                      onClick={getAllMembers}
+                    >
+                      Remove member
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" onClick={deleteClass}>
+                      Delete this class
+                    </a>
+                  </li>
+                </div>
+              );
+            else
+              element = (
+                <div>
+                  <li>
+                    <a class="dropdown-item" href="#" onClick={leaveThisTeam}>
+                      Leave this team
+                    </a>
+                  </li>
+                </div>
+              );
+            if (
+              item.roomOwner.accountId !== user.accountId &&
+              item.roomMembers.some((e) => {
+                if (e.accountId === user.accountId) return true;
+                return false;
+              }) === false
+            )
+              return false;
+            else {
+              return (
+                <div class="col-sm-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title" style={{ display: 'inline-block' }}>
+                        {index + 1}
+                      </h5>
+                      <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
+                        <a
+                          class=""
+                          href="#"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          onClick={() => {
+                            setClassId(item.classroomId);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faEllipsis} />
+                        </a>
 
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            href="#"
-                            onClick={() => {
-                              manageClass();
-                            }}
-                          >
-                            Manage team
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            className="dropdown-item"
-                            href="#exampleModal1"
-                            style={{ textDecoration: 'none' }}
-                            data-bs-target="#exampleModal1"
-                            data-bs-toggle="modal"
-                            onClick={() => {
-                              getMemberNotInClass();
-                            }}
-                          >
-                            Add new member
-                          </a>
-                        </li>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="#"
+                              onClick={() => {
+                                manageClass();
+                              }}
+                            >
+                              Manage team
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              className="dropdown-item"
+                              href="#exampleModal1"
+                              style={{ textDecoration: 'none' }}
+                              data-bs-target="#exampleModal1"
+                              data-bs-toggle="modal"
+                              onClick={() => {
+                                getMemberNotInClass();
+                              }}
+                            >
+                              Add new member
+                            </a>
+                          </li>
+                          {element}
+                        </ul>
+                      </div>
 
-                        <li>
-                          <a
-                            className="dropdown-item"
-                            href="#exampleModal2"
-                            style={{ textDecoration: 'none' }}
-                            data-bs-target="#exampleModal2"
-                            data-bs-toggle="modal"
-                            onClick={getAllMembers}
-                          >
-                            Remove member
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#" onClick={deleteClass}>
-                            Delete this class
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#">
-                            Leave this team
-                          </a>
-                        </li>
-                      </ul>
+                      <p class="card-text">{item.className}</p>
+                      <p>Room owner: {item.roomOwner.username}</p>
+
+                      <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
+                        Go detail
+                      </button>
                     </div>
-
-                    <p class="card-text">{item.className}</p>
-                    <p>Room owner: {item.roomOwner.username}</p>
-
-                    <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
-                      Go detail
-                    </button>
                   </div>
                 </div>
-              </div>
-            );
+              );
+            }
           })}
         </div>
       </>
