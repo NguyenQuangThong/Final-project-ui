@@ -9,6 +9,7 @@ function Class() {
   const [accounts, setAccounts] = useState([]);
   const [classId, setClassId] = useState('');
   const [members, setMembers] = useState([]);
+  const [roomOwnerId, setRoomOwnerId] = useState('');
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
@@ -86,6 +87,19 @@ function Class() {
       }
     };
 
+    const addMemberRequest = (e) => {
+      e.preventDefault();
+      axios
+        .post('http://localhost:8080/requests', {
+          ownerId: roomOwnerId,
+          requesterId: user.accountId,
+          memberId: e.target.value[2],
+          classroomId: e.target.value[0],
+        })
+        .then((response) => alert('Your request have been send!'))
+        .catch((err) => alert('Some errors have been found!'));
+    };
+
     const isChecked = (e) => {
       if (e.target.checked) accountList.push(parseInt(e.target.value));
       else accountList = accountList.filter((accountList) => accountList !== parseInt(e.target.value));
@@ -143,6 +157,47 @@ function Class() {
           .catch((err) => alert('Delete class failed!'));
       }
     };
+
+    let add = '';
+    if (roomOwnerId === user.accountId)
+      add = (
+        <>
+          {accounts.map((item, index) => {
+            return (
+              <li class="list-group-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    {item.username}
+                  </label>
+                </div>
+              </li>
+            );
+          })}
+          <button onClick={addMember} value={classId}>
+            Add
+          </button>
+        </>
+      );
+    else
+      add = (
+        <>
+          {accounts.map((item, index) => {
+            return (
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-sm-8">{item.username}</div>
+                  <div class="col-sm-4">
+                    <button className="btn btn-primary" onClick={addMemberRequest} value={[classId, item.accountId]}>
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </>
+      );
     return (
       <>
         {/* Add new members */}
@@ -156,23 +211,7 @@ function Class() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <ul class="list-group list-group-flush">
-                  {accounts.map((item, index) => {
-                    return (
-                      <li class="list-group-item">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
-                          <label class="form-check-label" for="flexCheckDefault">
-                            {item.username}
-                          </label>
-                        </div>
-                      </li>
-                    );
-                  })}
-                  <button onClick={addMember} value={classId}>
-                    Add
-                  </button>
-                </ul>
+                <ul class="list-group list-group-flush">{add}</ul>
               </div>
             </div>
           </div>
@@ -251,7 +290,7 @@ function Class() {
           </div>
         </div>
 
-        <div style={{ marginTop: '10px' }}>
+        <div style={{ marginTop: '10px' }} className="container-fluid">
           <h4 style={{ display: 'inline-block' }}>Class:</h4>
           <button
             type="button"
@@ -309,8 +348,9 @@ function Class() {
             else {
               return (
                 <div class="col-sm-3">
+                  <br></br>
                   <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style={{ backgroundColor: '#c5d5c5' }}>
                       <h5 class="card-title" style={{ display: 'inline-block' }}>
                         {index + 1}
                       </h5>
@@ -323,6 +363,7 @@ function Class() {
                           aria-expanded="false"
                           onClick={() => {
                             setClassId(item.classroomId);
+                            setRoomOwnerId(item.roomOwner.accountId);
                           }}
                         >
                           <FontAwesomeIcon icon={faEllipsis} />
@@ -358,8 +399,12 @@ function Class() {
                         </ul>
                       </div>
 
-                      <p class="card-text">{item.className}</p>
-                      <p>Room owner: {item.roomOwner.username}</p>
+                      <p class="card-text">
+                        <b>Class name:</b> {item.className}
+                      </p>
+                      <p>
+                        <b>Room owner:</b> {item.roomOwner.username}
+                      </p>
 
                       <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
                         Go detail
@@ -375,4 +420,5 @@ function Class() {
     );
   }
 }
+
 export default Class;

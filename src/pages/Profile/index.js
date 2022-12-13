@@ -237,7 +237,11 @@ function Profile() {
                       </div>
 
                       <div class="form-group">
-                        <button type="submit" class="form-control btn btn-primary rounded submit px-3">
+                        <button
+                          type="submit"
+                          class="form-control btn btn-primary rounded submit px-3"
+                          disabled={user.fullName === fullName && user.email === email ? true : false}
+                        >
                           OK
                         </button>
                       </div>

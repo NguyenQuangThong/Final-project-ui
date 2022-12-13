@@ -54,8 +54,8 @@ function ClassDetail() {
           accountId: user.accountId,
           postId: postId,
         })
-        .then((response) => alert('Reply success!'))
-        .catch((err) => alert('Reply failed!'));
+        .then((response) => (window.location.href = '/class/detail'))
+        .catch((err) => alert('Some errors have been found!'));
     };
 
     useEffect(() => {
@@ -142,7 +142,7 @@ function ClassDetail() {
                               getFatherComment(item.content);
                             }}
                           >
-                            <small>Reply</small>
+                            <small style={{ float: 'right' }}>Reply</small>
                           </a>
                         </i>
                       </p>
@@ -159,10 +159,10 @@ function ClassDetail() {
                             <img src={'http://localhost:8080/' + avatar} class="avatar" alt="" />
                             <div class="post-comments">
                               <p class="meta">
-                                {Date(item.timestamp)} <a href="#">{item.account.username}</a> says :{' '}
+                                {new Date(item.timestamp).toUTCString()} <a href="#">{item.account.username}</a> says :{' '}
                                 <i class="pull-right">
                                   <a href="#">
-                                    <small>Reply</small>
+                                    <small style={{ float: 'right' }}>Reply</small>
                                   </a>
                                 </i>
                               </p>

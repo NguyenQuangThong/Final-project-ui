@@ -12,6 +12,8 @@ import File from '~/pages/File';
 import Meeting from '~/pages/Meeting';
 import ForgotPassword from '~/pages/ForgotPassword';
 import ChangeForgotPassword from '~/pages/ForgotPassword/ChangeForgotPassword';
+import Request from '~/pages/Request';
+import OtherProfile from '~/pages/OtherProfile';
 const publicRoutes = [
   { path: '/', component: Home },
   { path: '/class', component: Class },
@@ -25,6 +27,8 @@ const publicRoutes = [
   { path: '/class/meeting', component: Meeting, layout: ClassDetailHeader },
   { path: '/forgot-password', component: ForgotPassword, layout: null },
   { path: '/forgot-password/change', component: ChangeForgotPassword, layout: null },
+  { path: '/class/request', component: Request, layout: HeaderOnly },
+  { path: '/other-profile', component: OtherProfile, layout: HeaderOnly },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

@@ -14,11 +14,14 @@ function ClassDetailFooter() {
 
   const newPost = async (e) => {
     e.preventDefault();
-    await axios.post('http://localhost:8080/posts', {
-      content: comment,
-      accountId: userId,
-      classroomId: classId,
-    });
+    await axios
+      .post('http://localhost:8080/posts', {
+        content: comment,
+        accountId: userId,
+        classroomId: classId,
+      })
+      .then(() => (window.location.href = '/class/detail'))
+      .catch((err) => alert('Some errors have been found!'));
   };
 
   return (
