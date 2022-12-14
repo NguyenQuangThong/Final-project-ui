@@ -13,7 +13,7 @@ function Class() {
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
-      await axios.get('http://localhost:8080/classrooms').then((response) => setClasses(response.data));
+      await axios.get(window.URL + '/classrooms').then((response) => setClasses(response.data));
     };
     getAllClassrooms();
   }, []);
@@ -28,9 +28,7 @@ function Class() {
     };
 
     const getMemberNotInClass = async (e) => {
-      await axios
-        .get('http://localhost:8080/accounts/members/' + classId)
-        .then((response) => setAccounts(response.data));
+      await axios.get(window.URL + '/accounts/members/' + classId).then((response) => setAccounts(response.data));
     };
 
     const config = {
@@ -41,7 +39,7 @@ function Class() {
       e.preventDefault();
       axios
         .post(
-          'http://localhost:8080/classrooms',
+          window.URL + '/classrooms',
           {
             className: className,
           },
@@ -59,7 +57,7 @@ function Class() {
     const classDetail = async (e) => {
       e.preventDefault();
       localStorage.setItem('classId', e.target.value);
-      await axios.get('http://localhost:8080/classrooms/' + e.target.value).then((response) => {
+      await axios.get(window.URL + '/classrooms/' + e.target.value).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -67,7 +65,7 @@ function Class() {
     };
 
     const manageClass = async (e) => {
-      await axios.get('http://localhost:8080/classrooms/' + classId).then((response) => {
+      await axios.get(window.URL + '/classrooms/' + classId).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -79,7 +77,7 @@ function Class() {
       if (accountList.length === 0) alert('Please select member to add!');
       else {
         axios
-          .post('http://localhost:8080/classrooms/' + e.target.value, {
+          .post(window.URL + '/classrooms/' + e.target.value, {
             accountId: accountList,
           })
           .then((response) => alert('Adding members succesfully!'))
@@ -90,7 +88,7 @@ function Class() {
     const addMemberRequest = (e) => {
       e.preventDefault();
       axios
-        .post('http://localhost:8080/requests', {
+        .post(window.URL + '/requests', {
           ownerId: roomOwnerId,
           requesterId: user.accountId,
           memberId: e.target.value[2],
@@ -109,7 +107,7 @@ function Class() {
     const getAllMembers = (e) => {
       e.preventDefault();
       axios
-        .get('http://localhost:8080/classrooms/' + classId)
+        .get(window.URL + '/classrooms/' + classId)
         .then((response) => setMembers(response.data.roomMembers))
         .catch((err) => setMembers([]));
     };
@@ -119,7 +117,7 @@ function Class() {
       if (accountList.length === 0) alert('Please select member to remove!');
       else {
         axios
-          .delete('http://localhost:8080/classrooms/remove/' + classId, {
+          .delete(window.URL + '/classrooms/remove/' + classId, {
             data: {
               accountId: accountList,
             },
@@ -133,7 +131,7 @@ function Class() {
       e.preventDefault();
       if (window.confirm('Are you sure you want to leave this team?')) {
         axios
-          .delete('http://localhost:8080/classrooms/remove/' + classId, {
+          .delete(window.URL + '/classrooms/remove/' + classId, {
             data: {
               accountId: [user.accountId],
             },
@@ -149,7 +147,7 @@ function Class() {
       e.preventDefault();
       if (window.confirm('Are you sure you want to delete this class?')) {
         axios
-          .delete('http://localhost:8080/classrooms/' + classId)
+          .delete(window.URL + '/classrooms/' + classId)
           .then((response) => {
             alert('Delete class successfully!');
             window.location.reload();
@@ -174,7 +172,7 @@ function Class() {
               </li>
             );
           })}
-          <button onClick={addMember} value={classId}>
+          <button onClick={addMember} value={classId} className="btn btn-primary">
             Add
           </button>
         </>
@@ -281,7 +279,7 @@ function Class() {
                       </li>
                     );
                   })}
-                  <button onClick={removeMember} value={classId}>
+                  <button onClick={removeMember} value={classId} className="btn btn-danger">
                     Remove
                   </button>
                 </ul>
@@ -351,9 +349,9 @@ function Class() {
                   <br></br>
                   <div class="card">
                     <div class="card-body" style={{ backgroundColor: '#c5d5c5' }}>
-                      <h5 class="card-title" style={{ display: 'inline-block' }}>
+                      {/* <h5 class="card-title" style={{ display: 'inline-block' }}>
                         {index + 1}
-                      </h5>
+                      </h5> */}
                       <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
                         <a
                           class=""

@@ -37,12 +37,12 @@ function Profile() {
     };
 
     const getAccount = async (e) => {
-      await axios.get('http://localhost:8080/accounts/' + userId).then((response) => {
+      await axios.get(window.URL + '/accounts/' + userId).then((response) => {
         localStorage.setItem('user', JSON.stringify(response.data));
       });
     };
 
-    let avatar = 'http://localhost:8080/' + user.avatar;
+    let avatar = window.URL + '/' + user.avatar;
 
     const handleFullName = (e) => {
       setFullName(e.target.value);
@@ -63,7 +63,7 @@ function Profile() {
       data.append('email', email);
       data.append('avatar', content);
       axios
-        .put('http://localhost:8080/accounts/' + userId, data, {
+        .put(window.URL + '/accounts/' + userId, data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -84,7 +84,7 @@ function Profile() {
       if (newPassword !== confirmNewPassword) alert('Password does not match!');
       else {
         axios
-          .put('http://localhost:8080/accounts/password/' + userId, {
+          .put(window.URL + '/accounts/password/' + userId, {
             oldPassword,
             newPassword,
           })
@@ -182,28 +182,20 @@ function Profile() {
                       <div class="w-100">
                         <h3 class="mb-4">Profile</h3>
                       </div>
-
-                      <div class="w-100">
-                        <p class="social-media d-flex justify-content-end">
-                          <a href="#" class="social-icon d-flex align-items-center justify-content-center">
-                            <span class="fa fa-facebook"></span>
-                          </a>
-                          <a href="#" class="social-icon d-flex align-items-center justify-content-center">
-                            <span class="fa fa-twitter"></span>
-                          </a>
-                        </p>
-                      </div>
                     </div>
                     <div class="text-center">
                       {/* <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} /> */}
                       <label for="image">
-                        <input
-                          type="file"
-                          accept="image/png, image/gif, image/jpeg"
-                          onChange={handleAvatar}
-                          name="image"
-                          id="image"
-                        />
+                        <div style={{ backgroundColor: 'darkgray', borderRadius: 20, width: 310 }}>
+                          <input
+                            type="file"
+                            accept="image/png, image/gif, image/jpeg"
+                            onChange={handleAvatar}
+                            name="image"
+                            id="image"
+                            style={{ borderRadius: 20 }}
+                          />
+                        </div>
                         <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} />
                       </label>
                       <h4>{username}</h4>

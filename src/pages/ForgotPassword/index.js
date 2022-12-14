@@ -11,7 +11,7 @@ function ForgotPassword() {
     var sender = new FormData();
     sender.append('email', email);
     await axios
-      .post('http://localhost:8080/accounts/forgot-password', sender)
+      .post(window.URL + '/accounts/forgot-password', sender)
       .then((response) => {
         if (response.data != null) {
           localStorage.setItem('userId', response.data);
@@ -27,6 +27,7 @@ function ForgotPassword() {
     <spinner>
       <form class="signin-form container justify-content-center" onSubmit={handleSubmit} style={{ width: '30%' }}>
         <h5 style={{ textAlign: 'center' }}>We will send the verify code to your email you entered.</h5>
+        <h5 style={{ textAlign: 'center' }}>(This will take a minute. Please wait!)</h5>
         <div class="form-group mb-3">
           <label class="label" for="name">
             Your email

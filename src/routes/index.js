@@ -1,6 +1,5 @@
 import Home from '~/pages/Home';
 import Class from '~/pages/Class';
-import Upload from '~/pages/Upload';
 import Login from '~/pages/Login';
 import Signup from '~/pages/Signup';
 import Profile from '~/pages/Profile';
@@ -14,15 +13,16 @@ import ForgotPassword from '~/pages/ForgotPassword';
 import ChangeForgotPassword from '~/pages/ForgotPassword/ChangeForgotPassword';
 import Request from '~/pages/Request';
 import OtherProfile from '~/pages/OtherProfile';
+import ClassDetailLayout from '~/components/Layout/ClassDetailLayout';
+import ClassDetailFooter from '~/components/Layout/ClassDetailFooter';
 const publicRoutes = [
   { path: '/', component: Home },
-  { path: '/class', component: Class },
-  { path: '/upload', component: Upload, layout: HeaderOnly },
+  { path: '/class', component: Class, layout: HeaderOnly },
   { path: '/login', component: Login, layout: null },
   { path: '/signup', component: Signup, layout: null },
   { path: '/profile', component: Profile, layout: HeaderOnly },
-  { path: '/class/detail', component: ClassDetail, layout: ClassDetailHeader },
-  { path: '/class/manage', component: ClassManage },
+  { path: '/class/detail', component: ClassDetail, layout: ClassDetailLayout },
+  { path: '/class/manage', component: ClassManage, layout: HeaderOnly },
   { path: '/class/file', component: File, layout: ClassDetailHeader },
   { path: '/class/meeting', component: Meeting, layout: ClassDetailHeader },
   { path: '/forgot-password', component: ForgotPassword, layout: null },

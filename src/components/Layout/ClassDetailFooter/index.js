@@ -15,7 +15,7 @@ function ClassDetailFooter() {
   const newPost = async (e) => {
     e.preventDefault();
     await axios
-      .post('http://localhost:8080/posts', {
+      .post(window.URL + '/posts', {
         content: comment,
         accountId: userId,
         classroomId: classId,

@@ -19,7 +19,7 @@ function ChangeForgotPassword() {
     if (password !== confirmPassword) alert('Password does not match!');
     else {
       await axios
-        .put('http://localhost:8080/accounts/password/' + localStorage.getItem('userId'), {
+        .put(window.URL + '/accounts/password/' + localStorage.getItem('userId'), {
           oldPassword: code,
           newPassword: password,
         })

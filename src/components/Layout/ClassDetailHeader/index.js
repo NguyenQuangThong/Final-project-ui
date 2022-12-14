@@ -3,7 +3,7 @@ import Header from '../DefaultLayout/Header';
 
 function ClassDetailHeader({ children }) {
   return (
-    <div>
+    <>
       <div className="sticky-top">
         <Header />
         <nav class="navbar navbar-light bg-light">
@@ -12,11 +12,11 @@ function ClassDetailHeader({ children }) {
               <a href="/class/detail" style={{ textDecoration: 'none' }}>
                 General
               </a>
-              &nbsp;
+              &nbsp; &nbsp;
               <a href="/class/file" style={{ textDecoration: 'none' }}>
                 Files
               </a>
-              &nbsp;
+              &nbsp; &nbsp;
               <a href="/class/meeting" style={{ textDecoration: 'none' }}>
                 Meeting now
               </a>
@@ -25,10 +25,10 @@ function ClassDetailHeader({ children }) {
         </nav>
       </div>
       <div style={{ marginBottom: 150 }}>{children}</div>
-      <div>
+      {/* <div>
         <ClassDetailFooter />
-      </div>
-    </div>
+      </div> */}
+    </>
   );
 }
 export default ClassDetailHeader;

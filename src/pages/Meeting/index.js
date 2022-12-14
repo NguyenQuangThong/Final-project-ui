@@ -1,5 +1,13 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
+import { faPhoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { faShareFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function Meeting() {
   var peerConnection;
 
@@ -253,25 +261,13 @@ function Meeting() {
   };
 
   return (
-    <div>
-      <div>
-        <img
-          style={{ float: 'left', width: 'auto', height: '50px' }}
-          alt=""
-          src="https://itsallbinary.com/wp-content/uploads/2017/03/final_itsallbinary.gif"
-        />
-        <h3 style={{ position: 'relative', left: 10 }}>
-          WebRTC Video Conferencing <br />
-          Application Demo
-        </h3>
-      </div>
-
+    <div className="container">
       <div className="container">
         <div className="row">
           <div className="col" style={{ textAlign: 'center' }}>
             <h3 style={{ margin: 5 }}>Other</h3>
             <video
-              style={{ width: '50vh', height: '50vh' }}
+              style={{ width: '30vh', height: '30vh' }}
               id="remote"
               poster="https://img.icons8.com/fluent/48/000000/person-male.png"
               autoPlay
@@ -293,43 +289,53 @@ function Meeting() {
           </div>
         </div>
       </div>
+      <div style={{ display: 'inline-block', textAlign: 'center' }} className="container">
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            disPlayLocalVideoStream(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button
+          className="btn btn-primary"
+          onClick={async () => {
+            let localVideoStream;
+            const screenStream = await navigator.mediaDevices.getDisplayMedia({
+              audio: true,
+              video: true,
+            });
 
-      <button
-        onClick={() => {
-          disPlayLocalVideoStream(true);
-        }}
-      >
-        Call
-      </button>
-      <button
-        onClick={async () => {
-          let localVideoStream;
-          const screenStream = await navigator.mediaDevices.getDisplayMedia({
-            audio: true,
-            video: true,
-          });
-
-          console.log('Received local stream');
-          localVideoStream = screenStream;
-          logVideoAudioTrackInfo(localVideoStream);
-          console.log('Local:' + screenStream);
-          addLocalStreamToPeerConnection(true);
-        }}
-      >
-        Share screen
-      </button>
-      <div>
-        <button onClick={turnOffCamera}>Turn off camera</button>
-        <button onClick={turnOnCamera}>Turn on camera</button>
-      </div>
-      <div>
-        <button onClick={turnOffMicro}>Turn off micro</button>
-        <button onClick={turnOnMicro}>Turn on micro</button>
-      </div>
-
-      <div className="box">
-        <button id="leaveButton" style={{ backgroundColor: '#008cba', color: 'white' }} onClick={leave}>
-          Leave Video Conference
+            console.log('Received local stream');
+            localVideoStream = screenStream;
+            logVideoAudioTrackInfo(localVideoStream);
+            console.log('Local:' + screenStream);
+            addLocalStreamToPeerConnection(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faShareFromSquare}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button className="btn btn-primary" onClick={turnOffCamera}>
+          <FontAwesomeIcon icon={faVideoSlash}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button className="btn btn-primary" onClick={turnOnCamera}>
+          <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button className="btn btn-primary" onClick={turnOffMicro}>
+          <FontAwesomeIcon icon={faMicrophoneSlash}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button className="btn btn-primary" onClick={turnOnMicro}>
+          <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button id="leaveButton" onClick={leave} className="btn btn-primary">
+          <FontAwesomeIcon icon={faPhoneSlash}></FontAwesomeIcon>
         </button>
       </div>
     </div>

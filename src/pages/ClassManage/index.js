@@ -22,7 +22,7 @@ function ClassManage() {
 
     useEffect(() => {
       const getClassroomById = async (e) => {
-        await axios.get('http://localhost:8080/classrooms/' + classroomId).then((response) => {
+        await axios.get(window.URL + '/classrooms/' + classroomId).then((response) => {
           setRoomOwner(response.data.roomOwner);
           setRoomMembers(response.data.roomMembers);
         });
@@ -30,10 +30,13 @@ function ClassManage() {
       getClassroomById();
     }, [classroomId]);
 
+    const other = (e) => {
+      console.log(e);
+      localStorage.setItem('otherId', e);
+    };
+
     const getMemberNotInClass = async (e) => {
-      await axios
-        .get('http://localhost:8080/accounts/members/' + classroomId)
-        .then((response) => setAccounts(response.data));
+      await axios.get(window.URL + '/accounts/members/' + classroomId).then((response) => setAccounts(response.data));
     };
 
     const addMember = (e) => {
@@ -41,7 +44,7 @@ function ClassManage() {
       if (accountList.length === 0) alert('Please select member to add!');
       else {
         axios
-          .post('http://localhost:8080/classrooms/' + classroomId, {
+          .post(window.URL + '/classrooms/' + classroomId, {
             accountId: accountList,
           })
           .then((response) => {
@@ -57,7 +60,7 @@ function ClassManage() {
       if (accountList.length === 0) alert('Please select member to remove!');
       else {
         axios
-          .delete('http://localhost:8080/classrooms/remove/' + classroomId, {
+          .delete(window.URL + '/classrooms/remove/' + classroomId, {
             data: {
               accountId: accountList,
             },
@@ -101,7 +104,7 @@ function ClassManage() {
                       </li>
                     );
                   })}
-                  <button onClick={addMember} value={classroomId}>
+                  <button onClick={addMember} value={classroomId} className="btn btn-primary">
                     Add
                   </button>
                 </ul>
@@ -136,10 +139,14 @@ function ClassManage() {
               <th scope="row">1</th>
               <th scope="row"></th>
               <td>
-                <a href="#a" style={{ textDecoration: 'none' }}>
+                <a
+                  href={user.accountId === roomOwner.accountId ? '/profile' : '/other-profile'}
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => other(roomOwner.accountId)}
+                >
                   <img
                     style={{ width: 50, height: 50, borderRadius: 50 }}
-                    src={'http://localhost:8080/' + roomOwner.avatar}
+                    src={window.URL + '/' + roomOwner.avatar}
                     alt=""
                   ></img>
                   {roomOwner.username}
@@ -155,10 +162,14 @@ function ClassManage() {
                     <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
                   </th>
                   <td>
-                    <a href="#a" style={{ textDecoration: 'none' }}>
+                    <a
+                      href={item.accountId === user.accountId ? '/profile' : '/other-profile'}
+                      style={{ textDecoration: 'none' }}
+                      onClick={() => other(item.accountId)}
+                    >
                       <img
                         style={{ width: 50, height: 50, borderRadius: 50 }}
-                        src={'http://localhost:8080/' + item.avatar}
+                        src={window.URL + '/' + item.avatar}
                         alt=""
                       ></img>
                       {item.username}

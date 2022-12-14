@@ -33,17 +33,12 @@ function Header() {
       alert('Your session has been ended!');
       logout();
     }
-    let avatar = 'http://localhost:8080/' + user.avatar;
+    let avatar = window.URL + '/' + user.avatar;
     navElement = (
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
           <a className="nav-link active" aria-current="page" href="/class">
             Class
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link active" href="#">
-            Files
           </a>
         </li>
         <li className="nav-item">

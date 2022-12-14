@@ -4,7 +4,10 @@ function DefaultLayout({ children }) {
   return (
     <>
       <Header />
-      {children}
+      <div style={{ minHeight: '100%', marginBottom: '-50px' }}>
+        {children}
+        <div style={{ height: '50px' }}></div>
+      </div>
       <Footer />
     </>
   );

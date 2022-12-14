@@ -28,7 +28,7 @@ function Signup() {
       alert('Password and confirm password does not match!');
     } else {
       axios
-        .post('http://localhost:8080/signup', {
+        .post(window.URL + '/signup', {
           username: username,
           password: password,
           fullName: fullName,
@@ -59,16 +59,6 @@ function Signup() {
                 <div class="d-flex">
                   <div class="w-100">
                     <h3 class="mb-4">Sign Up</h3>
-                  </div>
-                  <div class="w-100">
-                    <p class="social-media d-flex justify-content-end">
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center">
-                        <span class="fa fa-facebook"></span>
-                      </a>
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center">
-                        <span class="fa fa-twitter"></span>
-                      </a>
-                    </p>
                   </div>
                 </div>
                 <form class="signin-form" onSubmit={handleSubmit}>

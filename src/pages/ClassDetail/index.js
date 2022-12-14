@@ -14,6 +14,7 @@ function ClassDetail() {
     const [fatherComment, setFatherComment] = useState('');
     const [reply, setReply] = useState('');
     const [postId, setPostId] = useState('');
+    const [otherId, setOtherId] = useState('');
     let childPosts = [];
     let classroom = JSON.parse(localStorage.getItem('classroom'));
 
@@ -21,8 +22,12 @@ function ClassDetail() {
 
     let className = classroom.className;
 
+    const other = (e) => {
+      localStorage.setItem('otherId', e);
+    };
+
     const getAvatar = (id) => {
-      axios.get('http://localhost:8080/accounts/' + id).then((response) => setAvatar(response.data.avatar));
+      axios.get(window.URL + '/accounts/' + id).then((response) => setAvatar(response.data.avatar));
     };
 
     const getFatherId = (id) => {
@@ -49,7 +54,7 @@ function ClassDetail() {
       e.preventDefault();
       console.log(reply);
       await axios
-        .post('http://localhost:8080/child-posts', {
+        .post(window.URL + '/child-posts', {
           content: reply,
           accountId: user.accountId,
           postId: postId,
@@ -60,9 +65,7 @@ function ClassDetail() {
 
     useEffect(() => {
       const getPostOfClass = async (e) => {
-        await axios
-          .get('http://localhost:8080/posts/of/' + classroom.classroomId)
-          .then((response) => setPosts(response.data));
+        await axios.get(window.URL + '/posts/of/' + classroom.classroomId).then((response) => setPosts(response.data));
       };
       getPostOfClass();
     }, []);
@@ -118,18 +121,23 @@ function ClassDetail() {
             <h4>Post your comment to start a conversation.</h4>
           </div>
           {posts.map((item, index) => {
-            var ts = new Date(item.timestamp);
             childPosts = item.childPosts;
             getAvatar(item.account.accountId);
             return (
               <div className="blog-comment">
                 <ul class="comments">
                   <li class="clearfix">
-                    <img src={'http://localhost:8080/' + avatar} class="avatar" alt="" />
+                    <img src={window.URL + '/' + avatar} class="avatar" alt="" />
                     <div class="post-comments">
                       <p class="meta">
-                        {ts.toUTCString()}
-                        <a href="#">{item.account.username}</a> says :
+                        {new Date(item.timestamp).toString()}{' '}
+                        <a
+                          href={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
+                          onClick={() => other(item.account.accountId)}
+                        >
+                          {item.account.username}{' '}
+                        </a>
+                        says :
                         <i class="pull-right">
                           <a
                             href="#exampleModal"
@@ -156,12 +164,29 @@ function ClassDetail() {
                       return (
                         <ul>
                           <li class="clearfix">
-                            <img src={'http://localhost:8080/' + avatar} class="avatar" alt="" />
+                            <img src={window.URL + '/' + avatar} class="avatar" alt="" />
                             <div class="post-comments">
                               <p class="meta">
-                                {new Date(item.timestamp).toUTCString()} <a href="#">{item.account.username}</a> says :{' '}
+                                {new Date(item.timestamp).toString()}{' '}
+                                <a
+                                  href={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
+                                  onClick={() => other(item.account.accountId)}
+                                >
+                                  {item.account.username}
+                                </a>{' '}
+                                says :{' '}
                                 <i class="pull-right">
-                                  <a href="#">
+                                  <a
+                                    href="#exampleModal"
+                                    data-bs-target="#exampleModal"
+                                    data-bs-toggle="modal"
+                                    onClick={() => {
+                                      getFatherId(item.account.accountId);
+                                      getPostId(item.postId);
+                                      getFatherName(item.account.username);
+                                      getFatherComment(item.content);
+                                    }}
+                                  >
                                     <small style={{ float: 'right' }}>Reply</small>
                                   </a>
                                 </i>
