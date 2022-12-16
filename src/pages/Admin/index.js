@@ -10,6 +10,8 @@ function Admin() {
   const [classes, setClasses] = useState([]);
   const [files, setFiles] = useState([]);
 
+  console.log(window.PATHR + '/class');
+
   useEffect(() => {
     const getAllAccount = async (e) => {
       await axios
