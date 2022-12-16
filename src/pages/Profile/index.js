@@ -37,12 +37,12 @@ function Profile() {
     };
 
     const getAccount = async (e) => {
-      await axios.get(window.URL + '/accounts/' + userId).then((response) => {
+      await axios.get(window.DOMAIN + '/accounts/' + userId).then((response) => {
         localStorage.setItem('user', JSON.stringify(response.data));
       });
     };
 
-    let avatar = window.URL + '/' + user.avatar;
+    let avatar = window.DOMAIN + '/' + user.avatar;
 
     const handleFullName = (e) => {
       setFullName(e.target.value);
@@ -63,7 +63,7 @@ function Profile() {
       data.append('email', email);
       data.append('avatar', content);
       axios
-        .put(window.URL + '/accounts/' + userId, data, {
+        .put(window.DOMAIN + '/accounts/' + userId, data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -84,7 +84,7 @@ function Profile() {
       if (newPassword !== confirmNewPassword) alert('Password does not match!');
       else {
         axios
-          .put(window.URL + '/accounts/password/' + userId, {
+          .put(window.DOMAIN + '/accounts/password/' + userId, {
             oldPassword,
             newPassword,
           })

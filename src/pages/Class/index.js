@@ -13,7 +13,7 @@ function Class() {
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
-      await axios.get(window.URL + '/classrooms').then((response) => setClasses(response.data));
+      await axios.get(window.DOMAIN + '/classrooms').then((response) => setClasses(response.data));
     };
     getAllClassrooms();
   }, []);
@@ -28,7 +28,7 @@ function Class() {
     };
 
     const getMemberNotInClass = async (e) => {
-      await axios.get(window.URL + '/accounts/members/' + classId).then((response) => setAccounts(response.data));
+      await axios.get(window.DOMAIN + '/accounts/members/' + classId).then((response) => setAccounts(response.data));
     };
 
     const config = {
@@ -57,7 +57,7 @@ function Class() {
     const classDetail = async (e) => {
       e.preventDefault();
       localStorage.setItem('classId', e.target.value);
-      await axios.get(window.URL + '/classrooms/' + e.target.value).then((response) => {
+      await axios.get(window.DOMAIN + '/classrooms/' + e.target.value).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -65,7 +65,7 @@ function Class() {
     };
 
     const manageClass = async (e) => {
-      await axios.get(window.URL + '/classrooms/' + classId).then((response) => {
+      await axios.get(window.DOMAIN + '/classrooms/' + classId).then((response) => {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
@@ -77,7 +77,7 @@ function Class() {
       if (accountList.length === 0) alert('Please select member to add!');
       else {
         axios
-          .post(window.URL + '/classrooms/' + e.target.value, {
+          .post(window.DOMAIN + '/classrooms/' + e.target.value, {
             accountId: accountList,
           })
           .then((response) => alert('Adding members succesfully!'))
@@ -88,7 +88,7 @@ function Class() {
     const addMemberRequest = (e) => {
       e.preventDefault();
       axios
-        .post(window.URL + '/requests', {
+        .post(window.DOMAIN + '/requests', {
           ownerId: roomOwnerId,
           requesterId: user.accountId,
           memberId: e.target.value[2],
@@ -107,7 +107,7 @@ function Class() {
     const getAllMembers = (e) => {
       e.preventDefault();
       axios
-        .get(window.URL + '/classrooms/' + classId)
+        .get(window.DOMAIN + '/classrooms/' + classId)
         .then((response) => setMembers(response.data.roomMembers))
         .catch((err) => setMembers([]));
     };
@@ -117,7 +117,7 @@ function Class() {
       if (accountList.length === 0) alert('Please select member to remove!');
       else {
         axios
-          .delete(window.URL + '/classrooms/remove/' + classId, {
+          .delete(window.DOMAIN + '/classrooms/remove/' + classId, {
             data: {
               accountId: accountList,
             },
@@ -131,7 +131,7 @@ function Class() {
       e.preventDefault();
       if (window.confirm('Are you sure you want to leave this team?')) {
         axios
-          .delete(window.URL + '/classrooms/remove/' + classId, {
+          .delete(window.DOMAIN + '/classrooms/remove/' + classId, {
             data: {
               accountId: [user.accountId],
             },
@@ -147,7 +147,7 @@ function Class() {
       e.preventDefault();
       if (window.confirm('Are you sure you want to delete this class?')) {
         axios
-          .delete(window.URL + '/classrooms/' + classId)
+          .delete(window.DOMAIN + '/classrooms/' + classId)
           .then((response) => {
             alert('Delete class successfully!');
             window.location.reload();

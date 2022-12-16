@@ -15,7 +15,7 @@ function File() {
 
     useEffect(() => {
       const getFileByClassId = async (e) => {
-        await axios.get(window.URL + '/files').then((response) => {
+        await axios.get(window.DOMAIN + '/files').then((response) => {
           setFiles(response.data);
         });
       };
@@ -30,7 +30,7 @@ function File() {
     const deleteFile = (e) => {
       if (window.confirm('Are you sure you want to delete this file?'))
         axios
-          .delete(window.URL + '/files/delete/' + e)
+          .delete(window.DOMAIN + '/files/delete/' + e)
           .then((response) => {
             alert('File deleted!');
             window.location.href = '/class/file';
@@ -45,7 +45,7 @@ function File() {
       data.append('classroomId', classroom.classroomId);
       data.append('file', content);
       axios
-        .post(window.URL + '/files', data, {
+        .post(window.DOMAIN + '/files', data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -97,7 +97,7 @@ function File() {
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={window.URL + '/files/' + item.filePath.substring(13)}
+                        href={window.DOMAIN + '/files/' + item.filePath.substring(13)}
                       >
                         {item.filePath.substring(13)}
                       </a>
@@ -115,7 +115,7 @@ function File() {
                               href="#a"
                               onClick={() => {
                                 const method = 'GET';
-                                const url = window.URL + '/files/' + item.filePath.substring(13);
+                                const url = window.DOMAIN + '/files/' + item.filePath.substring(13);
                                 axios
                                   .request({
                                     url,

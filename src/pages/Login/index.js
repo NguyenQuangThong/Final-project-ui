@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(window.URL + '/login', {
+      .post(window.DOMAIN + '/login', {
         username: username,
         password: password,
       })

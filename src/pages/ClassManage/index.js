@@ -22,7 +22,7 @@ function ClassManage() {
 
     useEffect(() => {
       const getClassroomById = async (e) => {
-        await axios.get(window.URL + '/classrooms/' + classroomId).then((response) => {
+        await axios.get(window.DOMAIN + '/classrooms/' + classroomId).then((response) => {
           setRoomOwner(response.data.roomOwner);
           setRoomMembers(response.data.roomMembers);
         });
@@ -36,7 +36,9 @@ function ClassManage() {
     };
 
     const getMemberNotInClass = async (e) => {
-      await axios.get(window.URL + '/accounts/members/' + classroomId).then((response) => setAccounts(response.data));
+      await axios
+        .get(window.DOMAIN + '/accounts/members/' + classroomId)
+        .then((response) => setAccounts(response.data));
     };
 
     const addMember = (e) => {
@@ -44,7 +46,7 @@ function ClassManage() {
       if (accountList.length === 0) alert('Please select member to add!');
       else {
         axios
-          .post(window.URL + '/classrooms/' + classroomId, {
+          .post(window.DOMAIN + '/classrooms/' + classroomId, {
             accountId: accountList,
           })
           .then((response) => {
@@ -60,7 +62,7 @@ function ClassManage() {
       if (accountList.length === 0) alert('Please select member to remove!');
       else {
         axios
-          .delete(window.URL + '/classrooms/remove/' + classroomId, {
+          .delete(window.DOMAIN + '/classrooms/remove/' + classroomId, {
             data: {
               accountId: accountList,
             },
@@ -146,7 +148,7 @@ function ClassManage() {
                 >
                   <img
                     style={{ width: 50, height: 50, borderRadius: 50 }}
-                    src={window.URL + '/' + roomOwner.avatar}
+                    src={window.DOMAIN + '/' + roomOwner.avatar}
                     alt=""
                   ></img>
                   {roomOwner.username}
@@ -169,7 +171,7 @@ function ClassManage() {
                     >
                       <img
                         style={{ width: 50, height: 50, borderRadius: 50 }}
-                        src={window.URL + '/' + item.avatar}
+                        src={window.DOMAIN + '/' + item.avatar}
                         alt=""
                       ></img>
                       {item.username}

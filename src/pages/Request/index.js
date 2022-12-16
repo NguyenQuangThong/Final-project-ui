@@ -11,7 +11,7 @@ function Request() {
     useEffect(() => {
       const getRequestByRoomOwnerId = async (e) => {
         await axios
-          .get(window.URL + '/requests/room-owner/' + user.accountId)
+          .get(window.DOMAIN + '/requests/room-owner/' + user.accountId)
           .then((response) => setRequests(response.data))
           .catch((err) => alert('Some errors have been found!'));
       };
@@ -37,12 +37,12 @@ function Request() {
     const accept = (e) => {
       e.preventDefault();
       axios
-        .post(window.URL + '/classrooms/' + e.target.value[0], {
+        .post(window.DOMAIN + '/classrooms/' + e.target.value[0], {
           accountId: [e.target.value[2]],
         })
         .then((response) => {
           axios
-            .delete(window.URL + '/requests/' + e.target.value[4])
+            .delete(window.DOMAIN + '/requests/' + e.target.value[4])
             .then(() => {
               alert('Request has been accepted!');
               window.location.href = '/class/request';
@@ -53,7 +53,7 @@ function Request() {
 
     const deny = (e) => {
       axios
-        .delete(window.URL + '/requests/' + e.target.value)
+        .delete(window.DOMAIN + '/requests/' + e.target.value)
         .then(() => {
           alert('Request has been denied!');
           window.location.href = '/class/request';
@@ -80,7 +80,7 @@ function Request() {
                       style={{ textDecoration: 'none' }}
                     >
                       <img
-                        src={window.URL + '/' + item.requester.avatar}
+                        src={window.DOMAIN + '/' + item.requester.avatar}
                         class="rounded"
                         alt="avatar"
                         style={{ width: 50, height: 50 }}
@@ -97,7 +97,7 @@ function Request() {
                       style={{ textDecoration: 'none' }}
                     >
                       <img
-                        src={window.URL + '/' + item.member.avatar}
+                        src={window.DOMAIN + '/' + item.member.avatar}
                         class="rounded"
                         alt="avatar"
                         style={{ width: 50, height: 50 }}

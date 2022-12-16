@@ -28,7 +28,7 @@ function Signup() {
       alert('Password and confirm password does not match!');
     } else {
       axios
-        .post(window.URL + '/signup', {
+        .post(window.DOMAIN + '/signup', {
           username: username,
           password: password,
           fullName: fullName,

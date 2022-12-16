@@ -11,7 +11,7 @@ function ForgotPassword() {
     var sender = new FormData();
     sender.append('email', email);
     await axios
-      .post(window.URL + '/accounts/forgot-password', sender)
+      .post(window.DOMAIN + '/accounts/forgot-password', sender)
       .then((response) => {
         if (response.data != null) {
           localStorage.setItem('userId', response.data);

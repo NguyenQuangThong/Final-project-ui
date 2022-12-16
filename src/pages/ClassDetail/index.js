@@ -27,7 +27,7 @@ function ClassDetail() {
     };
 
     const getAvatar = (id) => {
-      axios.get(window.URL + '/accounts/' + id).then((response) => setAvatar(response.data.avatar));
+      axios.get(window.DOMAIN + '/accounts/' + id).then((response) => setAvatar(response.data.avatar));
     };
 
     const getFatherId = (id) => {
@@ -54,7 +54,7 @@ function ClassDetail() {
       e.preventDefault();
       console.log(reply);
       await axios
-        .post(window.URL + '/child-posts', {
+        .post(window.DOMAIN + '/child-posts', {
           content: reply,
           accountId: user.accountId,
           postId: postId,
@@ -65,7 +65,9 @@ function ClassDetail() {
 
     useEffect(() => {
       const getPostOfClass = async (e) => {
-        await axios.get(window.URL + '/posts/of/' + classroom.classroomId).then((response) => setPosts(response.data));
+        await axios
+          .get(window.DOMAIN + '/posts/of/' + classroom.classroomId)
+          .then((response) => setPosts(response.data));
       };
       getPostOfClass();
     }, []);
@@ -127,7 +129,7 @@ function ClassDetail() {
               <div className="blog-comment">
                 <ul class="comments">
                   <li class="clearfix">
-                    <img src={window.URL + '/' + avatar} class="avatar" alt="" />
+                    <img src={window.DOMAIN + '/' + avatar} class="avatar" alt="" />
                     <div class="post-comments">
                       <p class="meta">
                         {new Date(item.timestamp).toString()}{' '}
@@ -164,7 +166,7 @@ function ClassDetail() {
                       return (
                         <ul>
                           <li class="clearfix">
-                            <img src={window.URL + '/' + avatar} class="avatar" alt="" />
+                            <img src={window.DOMAIN + '/' + avatar} class="avatar" alt="" />
                             <div class="post-comments">
                               <p class="meta">
                                 {new Date(item.timestamp).toString()}{' '}

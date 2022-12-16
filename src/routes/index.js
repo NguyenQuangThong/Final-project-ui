@@ -14,14 +14,16 @@ import ChangeForgotPassword from '~/pages/ForgotPassword/ChangeForgotPassword';
 import Request from '~/pages/Request';
 import OtherProfile from '~/pages/OtherProfile';
 import ClassDetailLayout from '~/components/Layout/ClassDetailLayout';
-import ClassDetailFooter from '~/components/Layout/ClassDetailFooter';
+import User from '~/pages/Admin/User';
+import Admin from '~/pages/Admin';
+
 const publicRoutes = [
   { path: '/', component: Home },
   { path: '/class', component: Class, layout: HeaderOnly },
   { path: '/login', component: Login, layout: null },
   { path: '/signup', component: Signup, layout: null },
   { path: '/profile', component: Profile, layout: HeaderOnly },
-  { path: '/class/detail', component: ClassDetail, layout: ClassDetailLayout },
+  { path: 'Final-project-ui/class/detail', component: ClassDetail, layout: ClassDetailLayout },
   { path: '/class/manage', component: ClassManage, layout: HeaderOnly },
   { path: '/class/file', component: File, layout: ClassDetailHeader },
   { path: '/class/meeting', component: Meeting, layout: ClassDetailHeader },
@@ -29,6 +31,8 @@ const publicRoutes = [
   { path: '/forgot-password/change', component: ChangeForgotPassword, layout: null },
   { path: '/class/request', component: Request, layout: HeaderOnly },
   { path: '/other-profile', component: OtherProfile, layout: HeaderOnly },
+  { path: '/admin', component: Admin, layout: HeaderOnly },
+  { path: '/admin/users', component: User, layout: HeaderOnly },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

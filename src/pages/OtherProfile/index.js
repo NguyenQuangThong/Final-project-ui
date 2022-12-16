@@ -25,14 +25,14 @@ function OtherProfile() {
     useEffect(() => {
       const getOtherAccount = async (e) => {
         await axios
-          .get(window.URL + '/accounts/' + id)
+          .get(window.DOMAIN + '/accounts/' + id)
           .then((response) => setOther(response.data))
           .catch((err) => alert('Some errors have been found!'));
       };
       getOtherAccount();
     }, [id]);
 
-    let avatar = window.URL + '/' + other.avatar;
+    let avatar = window.DOMAIN + '/' + other.avatar;
 
     return (
       <>

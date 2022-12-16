@@ -33,7 +33,7 @@ function Header() {
       alert('Your session has been ended!');
       logout();
     }
-    let avatar = window.URL + '/' + user.avatar;
+    let avatar = window.DOMAIN + '/' + user.avatar;
     navElement = (
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
