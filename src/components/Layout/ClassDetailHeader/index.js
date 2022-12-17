@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import ClassDetailFooter from '../ClassDetailFooter';
 import Header from '../DefaultLayout/Header';
 
@@ -9,25 +10,22 @@ function ClassDetailHeader({ children }) {
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
             <div class="navbar-brand">
-              <a href="/class/detail" style={{ textDecoration: 'none' }}>
+              <Link to="/class/detail" style={{ textDecoration: 'none' }}>
                 General
-              </a>
+              </Link>
               &nbsp; &nbsp;
-              <a href="/class/file" style={{ textDecoration: 'none' }}>
+              <Link to="/class/file" style={{ textDecoration: 'none' }}>
                 Files
-              </a>
+              </Link>
               &nbsp; &nbsp;
-              <a href="/class/meeting" style={{ textDecoration: 'none' }}>
+              <Link to="/class/meeting" style={{ textDecoration: 'none' }}>
                 Meeting now
-              </a>
+              </Link>
             </div>
           </div>
         </nav>
       </div>
       <div style={{ marginBottom: 150 }}>{children}</div>
-      {/* <div>
-        <ClassDetailFooter />
-      </div> */}
     </>
   );
 }

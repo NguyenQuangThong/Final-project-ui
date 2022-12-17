@@ -17,24 +17,22 @@ import ClassDetailLayout from '~/components/Layout/ClassDetailLayout';
 import User from '~/pages/Admin/User';
 import Admin from '~/pages/Admin';
 
-const path = '/Final-project-ui';
-
 const publicRoutes = [
-  { path: path + '/', component: Home },
-  { path: path + '/class', component: Class, layout: HeaderOnly },
-  { path: path + '/login', component: Login, layout: null },
-  { path: path + '/signup', component: Signup, layout: null },
-  { path: path + '/profile', component: Profile, layout: HeaderOnly },
-  { path: path + '/class/detail', component: ClassDetail, layout: ClassDetailLayout },
-  { path: path + '/class/manage', component: ClassManage, layout: HeaderOnly },
-  { path: path + '/class/file', component: File, layout: ClassDetailHeader },
-  { path: path + '/class/meeting', component: Meeting, layout: ClassDetailHeader },
-  { path: path + '/forgot-password', component: ForgotPassword, layout: null },
-  { path: path + '/forgot-password/change', component: ChangeForgotPassword, layout: null },
-  { path: path + '/class/request', component: Request, layout: HeaderOnly },
-  { path: path + '/other-profile', component: OtherProfile, layout: HeaderOnly },
-  { path: path + '/admin', component: Admin, layout: HeaderOnly },
-  { path: path + '/admin/users', component: User, layout: HeaderOnly },
+  { path: '/', component: Home },
+  { path: '/class', component: Class, layout: HeaderOnly },
+  { path: '/login', component: Login, layout: null },
+  { path: '/signup', component: Signup, layout: null },
+  { path: '/profile', component: Profile, layout: HeaderOnly },
+  { path: '/class/detail', component: ClassDetail, layout: ClassDetailLayout },
+  { path: '/class/manage', component: ClassManage, layout: HeaderOnly },
+  { path: '/class/file', component: File, layout: ClassDetailHeader },
+  { path: '/class/meeting', component: Meeting, layout: ClassDetailHeader },
+  { path: '/forgot-password', component: ForgotPassword, layout: null },
+  { path: '/forgot-password/change', component: ChangeForgotPassword, layout: null },
+  { path: '/class/request', component: Request, layout: HeaderOnly },
+  { path: '/other-profile', component: OtherProfile, layout: HeaderOnly },
+  { path: '/admin', component: Admin, layout: HeaderOnly },
+  { path: '/admin/users', component: User, layout: HeaderOnly },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

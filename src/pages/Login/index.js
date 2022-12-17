@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  let navigate = useNavigate();
 
   const handleUserName = (e) => {
     setUserName(e.target.value);
@@ -21,7 +24,7 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(response.data.accountResponse));
         localStorage.setItem('token', JSON.stringify(response.data.token));
         alert('Login success');
-        window.location.replace('/class');
+        navigate('/class');
       })
       .catch((err) => {
         console.log(err);
@@ -84,13 +87,11 @@ const Login = () => {
                 <br></br>
                 <div class="container">
                   <div class="w-50 text-md-right" style={{ display: 'inline', textAlign: 'left' }}>
-                    <a href="/forgot-password">Forgot Password</a>
+                    <Link to="/forgot-password">Forgot Password</Link>
                   </div>
                   <p style={{ display: 'inline', float: 'right' }}>
                     Not a member?
-                    <a data-toggle="tab" href="/signup">
-                      Sign Up
-                    </a>
+                    <Link to="/signup">Sign Up</Link>
                   </p>
                 </div>
               </div>

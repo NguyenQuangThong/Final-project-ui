@@ -3,13 +3,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 function File() {
   let user = JSON.parse(localStorage.getItem('user'));
-  if (user === null) window.location.href = '/login';
+  let navigate = useNavigate();
+  if (user === null) navigate('/login');
   else {
     let classroom = JSON.parse(localStorage.getItem('classroom'));
 
-    if (classroom === null) window.location.href = '/';
+    if (classroom === null) navigate('/');
     const [files, setFiles] = useState([]);
     const [content, setContent] = useState(null);
 
@@ -33,7 +35,7 @@ function File() {
           .delete(window.DOMAIN + '/files/delete/' + e)
           .then((response) => {
             alert('File deleted!');
-            window.location.href = '/class/file';
+            window.location.reload();
           })
           .catch((err) => alert('Some errors have been found!'));
     };
@@ -52,7 +54,7 @@ function File() {
         })
         .then((response) => {
           alert('Upload file successfully!');
-          window.location.href = '/class/file';
+          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -104,7 +106,7 @@ function File() {
                     </td>
                     <td>
                       <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
-                        <a class="" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                           <FontAwesomeIcon icon={faEllipsis} />
                         </a>
 
@@ -112,7 +114,6 @@ function File() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="#a"
                               onClick={() => {
                                 const method = 'GET';
                                 const url = window.DOMAIN + '/files/' + item.filePath.substring(13);
@@ -137,7 +138,7 @@ function File() {
                             </a>
                           </li>
                           <li>
-                            <a href="#a" onClick={() => deleteFile(item.fileId)} className="dropdown-item">
+                            <a onClick={() => deleteFile(item.fileId)} className="dropdown-item">
                               Delete
                             </a>
                           </li>

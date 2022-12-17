@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import conf from '~/pages/Meeting/conf';
+import { useNavigate } from 'react-router-dom';
 function ChangeForgotPassword() {
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  let navigate = useNavigate();
+
   const handleCode = (e) => {
     setCode(e.target.value);
   };
@@ -26,7 +28,7 @@ function ChangeForgotPassword() {
         .then((response) => {
           localStorage.clear();
           alert('Change password successfully! Please use the recent password to sign in your account!');
-          window.location.href = '/login';
+          navigate('/login');
         })
         .catch((err) => alert('Your verify code is invalid!'));
     }

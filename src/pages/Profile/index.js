@@ -1,21 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 function Profile() {
   let user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
+  let navigate = useNavigate();
 
   function isTokenExpired(token) {
     const expiry = JSON.parse(atob(token.split('.')[1])).exp;
     return Math.floor(new Date().getTime() / 1000) >= expiry;
   }
 
-  if (user === null) window.location.href = '/login';
+  if (user === null) navigate('/login');
   else {
     if (isTokenExpired(token)) {
       alert('Your session have been expired!');
       localStorage.clear();
-      window.location.href = '/';
+      navigate('/');
     }
     let username = user.username;
     let userId = user.accountId;
@@ -71,7 +74,7 @@ function Profile() {
         .then((response) => {
           getAccount();
           alert('Update profile successfully!');
-          window.location.href = '/profile';
+          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -79,23 +82,21 @@ function Profile() {
           alert('Wrong credentials');
         });
     };
-    const passwordUpdate = (e) => {
+    const passwordUpdate = async (e) => {
       e.preventDefault();
       if (newPassword !== confirmNewPassword) alert('Password does not match!');
       else {
-        axios
+        await axios
           .put(window.DOMAIN + '/accounts/password/' + userId, {
             oldPassword,
             newPassword,
           })
           .then((response) => {
-            alert('Update profile successfully! Please sign in with your new password!');
             localStorage.clear();
-            window.location.href = '/login';
+            alert('Update profile successfully! Please sign in with your new password!');
+            navigate('/login');
           })
           .catch((err) => {
-            console.log(err);
-            console.log(err.response);
             alert('Wrong credentials');
           });
       }

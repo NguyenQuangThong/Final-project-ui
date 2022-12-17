@@ -4,14 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
+import { Link, useNavigate } from 'react-router-dom';
 function ClassManage() {
   let user = JSON.parse(localStorage.getItem('user'));
+  let navigate = useNavigate();
 
-  if (user === null) window.location.href = '/login';
+  if (user === null) navigate('/login');
   else {
     let classroom = JSON.parse(localStorage.getItem('classroom'));
 
-    if (classroom === null) window.location.href = '/';
+    if (classroom === null) navigate('/');
 
     let className = classroom.className;
     let classroomId = classroom.classroomId;
@@ -122,7 +124,7 @@ function ClassManage() {
             <FontAwesomeIcon icon={faCirclePlus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
           </a>
           &nbsp;
-          <a onClick={removeMember} href="#">
+          <a onClick={removeMember}>
             <FontAwesomeIcon icon={faCircleMinus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
           </a>
         </div>
@@ -141,8 +143,8 @@ function ClassManage() {
               <th scope="row">1</th>
               <th scope="row"></th>
               <td>
-                <a
-                  href={user.accountId === roomOwner.accountId ? '/profile' : '/other-profile'}
+                <Link
+                  to={user.accountId === roomOwner.accountId ? '/profile' : '/other-profile'}
                   style={{ textDecoration: 'none' }}
                   onClick={() => other(roomOwner.accountId)}
                 >
@@ -152,7 +154,7 @@ function ClassManage() {
                     alt=""
                   ></img>
                   {roomOwner.username}
-                </a>
+                </Link>
               </td>
               <td>Owner</td>
             </tr>
@@ -164,8 +166,8 @@ function ClassManage() {
                     <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
                   </th>
                   <td>
-                    <a
-                      href={item.accountId === user.accountId ? '/profile' : '/other-profile'}
+                    <Link
+                      to={item.accountId === user.accountId ? '/profile' : '/other-profile'}
                       style={{ textDecoration: 'none' }}
                       onClick={() => other(item.accountId)}
                     >
@@ -175,7 +177,7 @@ function ClassManage() {
                         alt=""
                       ></img>
                       {item.username}
-                    </a>
+                    </Link>
                   </td>
                   <td>Member</td>
                 </tr>

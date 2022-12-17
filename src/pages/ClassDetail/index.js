@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function ClassDetail() {
   let user = JSON.parse(localStorage.getItem('user'));
-  if (user === null) window.location.href = '/login';
+  let navigate = useNavigate();
+  if (user === null) navigate('/login');
   else {
     const token = localStorage.getItem('token');
     const [posts, setPosts] = useState([]);
@@ -18,7 +20,7 @@ function ClassDetail() {
     let childPosts = [];
     let classroom = JSON.parse(localStorage.getItem('classroom'));
 
-    if (classroom === null) window.location.href = '/';
+    if (classroom === null) navigate('/login');
 
     let className = classroom.className;
 
@@ -59,7 +61,7 @@ function ClassDetail() {
           accountId: user.accountId,
           postId: postId,
         })
-        .then((response) => (window.location.href = '/class/detail'))
+        .then((response) => window.location.reload())
         .catch((err) => alert('Some errors have been found!'));
     };
 
@@ -133,12 +135,12 @@ function ClassDetail() {
                     <div class="post-comments">
                       <p class="meta">
                         {new Date(item.timestamp).toString()}{' '}
-                        <a
-                          href={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
+                        <Link
+                          to={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
                           onClick={() => other(item.account.accountId)}
                         >
                           {item.account.username}{' '}
-                        </a>
+                        </Link>
                         says :
                         <i class="pull-right">
                           <a
@@ -170,12 +172,12 @@ function ClassDetail() {
                             <div class="post-comments">
                               <p class="meta">
                                 {new Date(item.timestamp).toString()}{' '}
-                                <a
-                                  href={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
+                                <Link
+                                  to={user.accountId === item.account.accountId ? '/profile' : '/other-profile'}
                                   onClick={() => other(item.account.accountId)}
                                 >
                                   {item.account.username}
-                                </a>{' '}
+                                </Link>{' '}
                                 says :{' '}
                                 <i class="pull-right">
                                   <a

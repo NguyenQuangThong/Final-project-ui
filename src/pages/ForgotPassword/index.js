@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { spinner } from 'react-loader-spinner';
+import { useNavigate } from 'react-router-dom';
+
 function ForgotPassword() {
   const [email, setEmail] = useState('');
+  let navigate = useNavigate;
+
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -16,7 +19,7 @@ function ForgotPassword() {
         if (response.data != null) {
           localStorage.setItem('userId', response.data);
           alert('Please check your email for the code!');
-          window.location.href = '/forgot-password/change';
+          navigate('/forgot-password/change');
         } else alert('Cannot find your email! Please try again!');
       })
       .catch((err) => {
@@ -24,23 +27,21 @@ function ForgotPassword() {
       });
   };
   return (
-    <spinner>
-      <form class="signin-form container justify-content-center" onSubmit={handleSubmit} style={{ width: '30%' }}>
-        <h5 style={{ textAlign: 'center' }}>We will send the verify code to your email you entered.</h5>
-        <h5 style={{ textAlign: 'center' }}>(This will take a minute. Please wait!)</h5>
-        <div class="form-group mb-3">
-          <label class="label" for="name">
-            Your email
-          </label>
-          <input type="email" class="form-control" placeholder="Email" value={email} onChange={handleEmail} required />
-        </div>
-        <div class="form-group">
-          <button type="submit" class="form-control btn btn-primary rounded submit px-3">
-            Send code
-          </button>
-        </div>
-      </form>
-    </spinner>
+    <form class="signin-form container justify-content-center" onSubmit={handleSubmit} style={{ width: '30%' }}>
+      <h5 style={{ textAlign: 'center' }}>We will send the verify code to your email you entered.</h5>
+      <h5 style={{ textAlign: 'center' }}>(This will take a minute. Please wait!)</h5>
+      <div class="form-group mb-3">
+        <label class="label" for="name">
+          Your email
+        </label>
+        <input type="email" class="form-control" placeholder="Email" value={email} onChange={handleEmail} required />
+      </div>
+      <div class="form-group">
+        <button type="submit" class="form-control btn btn-primary rounded submit px-3">
+          Send code
+        </button>
+      </div>
+    </form>
   );
 }
 export default ForgotPassword;

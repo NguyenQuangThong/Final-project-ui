@@ -1,12 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 function Header() {
   let user = JSON.parse(localStorage.getItem('user'));
   let button;
   let navElement;
+  let navigate = useNavigate();
 
   let logout = () => {
     localStorage.clear();
-    window.location.href = '/';
+    navigate('/');
   };
 
   const token = localStorage.getItem('token');
@@ -37,14 +38,14 @@ function Header() {
     navElement = (
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="/class">
+          <Link className="nav-link active" aria-current="page" to="/class">
             Class
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link active" href="/class/request">
+          <Link className="nav-link active" to="/class/request">
             Requests
-          </a>
+          </Link>
         </li>
       </ul>
     );
@@ -52,9 +53,9 @@ function Header() {
       <>
         <h4 style={{ color: 'white' }}>Hi! {user.username} </h4>
         &nbsp;
-        <a href="/profile">
+        <Link to="/profile">
           <img src={avatar} className="avatar" alt="An avatar"></img>
-        </a>
+        </Link>
         &nbsp;
         <button className="btn btn-danger" onClick={logout}>
           Log out

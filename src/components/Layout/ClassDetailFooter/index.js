@@ -20,7 +20,7 @@ function ClassDetailFooter() {
         accountId: userId,
         classroomId: classId,
       })
-      .then(() => (window.location.href = '/class/detail'))
+      .then(() => window.location.reload())
       .catch((err) => alert('Some errors have been found!'));
   };
 

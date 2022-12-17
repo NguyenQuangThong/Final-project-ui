@@ -1,21 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 function OtherProfile() {
   let user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
+  let navigate = useNavigate();
 
   function isTokenExpired(token) {
     const expiry = JSON.parse(atob(token.split('.')[1])).exp;
     return Math.floor(new Date().getTime() / 1000) >= expiry;
   }
 
-  if (user === null) window.location.href = '/login';
+  if (user === null) navigate('/login');
   else {
     if (isTokenExpired(token)) {
       alert('Your session have been expired!');
       localStorage.clear();
-      window.location.href = '/';
+      navigate('/');
     }
 
     const [other, setOther] = useState('');

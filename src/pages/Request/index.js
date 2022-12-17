@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Request() {
   let user = JSON.parse(localStorage.getItem('user'));
-  if (user === null) window.location.href = '/login';
+  let navigate = useNavigate();
+
+  if (user === null) navigate('/login');
   else {
     const [requests, setRequests] = useState([]);
 
@@ -45,7 +48,7 @@ function Request() {
             .delete(window.DOMAIN + '/requests/' + e.target.value[4])
             .then(() => {
               alert('Request has been accepted!');
-              window.location.href = '/class/request';
+              window.location.reload();
             })
             .catch((err) => alert('Some errors have been found!'));
         });
@@ -56,7 +59,7 @@ function Request() {
         .delete(window.DOMAIN + '/requests/' + e.target.value)
         .then(() => {
           alert('Request has been denied!');
-          window.location.href = '/class/request';
+          window.location.reload();
         })
         .catch((err) => alert('Some errors have been found!'));
     };
@@ -73,10 +76,10 @@ function Request() {
                 <tr>
                   <th scope="row">{index + 1}</th>
                   <td>
-                    <a
+                    <Link
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={'/other-profile'}
+                      to="/other-profile"
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -86,14 +89,14 @@ function Request() {
                         style={{ width: 50, height: 50 }}
                       />
                       {item.requester.username}
-                    </a>
+                    </Link>
                   </td>
 
                   <td>
-                    <a
+                    <Link
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={'/other-profile'}
+                      to="/other-profile"
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -103,7 +106,7 @@ function Request() {
                         style={{ width: 50, height: 50 }}
                       />
                       {item.member.username}
-                    </a>
+                    </Link>
                   </td>
                   <td>{item.classroom.className}</td>
                   <td>

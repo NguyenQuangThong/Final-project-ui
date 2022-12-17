@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 function Class() {
   let user = JSON.parse(localStorage.getItem('user'));
   const [classes, setClasses] = useState([]);
@@ -10,6 +11,7 @@ function Class() {
   const [classId, setClassId] = useState('');
   const [members, setMembers] = useState([]);
   const [roomOwnerId, setRoomOwnerId] = useState('');
+  let navigate = useNavigate();
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {
@@ -18,7 +20,7 @@ function Class() {
     getAllClassrooms();
   }, []);
 
-  if (user == null) window.location.href = '/login';
+  if (user == null) navigate('/login');
   else {
     let token = JSON.parse(localStorage.getItem('token'));
     let accountList = [];
@@ -39,7 +41,7 @@ function Class() {
       e.preventDefault();
       axios
         .post(
-          window.URL + '/classrooms',
+          window.DOMAIN + '/classrooms',
           {
             className: className,
           },
@@ -47,7 +49,7 @@ function Class() {
         )
         .then((response) => {
           alert('Create class successfuly!');
-          window.location.href = '/class';
+          window.location.reload();
         })
         .catch((err) => {
           alert('Create new class failed!');
@@ -61,7 +63,7 @@ function Class() {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
-      window.location.href = '/class/detail';
+      navigate('/class/detail');
     };
 
     const manageClass = async (e) => {
@@ -69,7 +71,7 @@ function Class() {
         localStorage.setItem('classroom', JSON.stringify(response.data));
       });
       console.log(JSON.parse(localStorage.getItem('classroom')));
-      window.location.href = 'class/manage';
+      navigate('/class/manage');
     };
 
     const addMember = (e) => {
@@ -80,7 +82,10 @@ function Class() {
           .post(window.DOMAIN + '/classrooms/' + e.target.value, {
             accountId: accountList,
           })
-          .then((response) => alert('Adding members succesfully!'))
+          .then((response) => {
+            alert('Adding members succesfully!');
+            window.location.reload();
+          })
           .catch((err) => alert('Adding members failed!'));
       }
     };
@@ -94,7 +99,10 @@ function Class() {
           memberId: e.target.value[2],
           classroomId: e.target.value[0],
         })
-        .then((response) => alert('Your request have been send!'))
+        .then((response) => {
+          alert('Your request have been send!');
+          window.location.reload();
+        })
         .catch((err) => alert('Some errors have been found!'));
     };
 
@@ -122,7 +130,10 @@ function Class() {
               accountId: accountList,
             },
           })
-          .then((response) => alert('Removing members succesfully!'))
+          .then((response) => {
+            alert('Removing members succesfully!');
+            window.location.reload();
+          })
           .catch((err) => alert('Removing members failed!'));
       }
     };
@@ -137,7 +148,7 @@ function Class() {
             },
           })
           .then((response) => {
-            window.location.href = '/class';
+            navigate('/class');
           })
           .catch((err) => alert('Some errors was found!'));
       }
@@ -319,7 +330,7 @@ function Class() {
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#" onClick={deleteClass}>
+                    <a class="dropdown-item" onClick={deleteClass}>
                       Delete this class
                     </a>
                   </li>
@@ -329,7 +340,7 @@ function Class() {
               element = (
                 <div>
                   <li>
-                    <a class="dropdown-item" href="#" onClick={leaveThisTeam}>
+                    <a class="dropdown-item" onClick={leaveThisTeam}>
                       Leave this team
                     </a>
                   </li>
@@ -371,7 +382,6 @@ function Class() {
                           <li>
                             <a
                               class="dropdown-item"
-                              href="#"
                               onClick={() => {
                                 manageClass();
                               }}

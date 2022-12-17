@@ -4,13 +4,13 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faSchool } from '@fortawesome/free-solid-svg-icons';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
 
 function Admin() {
   const [users, setUsers] = useState([]);
   const [classes, setClasses] = useState([]);
   const [files, setFiles] = useState([]);
-
-  console.log(window.PATHR + '/class');
+  let navigate = useNavigate();
 
   useEffect(() => {
     const getAllAccount = async (e) => {
@@ -68,7 +68,7 @@ function Admin() {
                     class="btn btn-primary"
                     onClick={(e) => {
                       e.preventDefault();
-                      window.location.href = item.Url;
+                      navigate(item.Url);
                     }}
                   >
                     Go detail

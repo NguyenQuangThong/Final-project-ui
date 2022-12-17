@@ -8,14 +8,17 @@ import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
+
 function Meeting() {
   var peerConnection;
+  let navigate = useNavigate();
 
   function leave() {
     console.log('Ending call');
     peerConnection.close();
     signalingWebsocket.close();
-    window.location.href = '/class/detail';
+    navigate('/class/detail');
   }
 
   var signalingWebsocket = new WebSocket('ws://localhost:8080/signal');
