@@ -12,6 +12,7 @@ function Class() {
   const [members, setMembers] = useState([]);
   const [roomOwnerId, setRoomOwnerId] = useState('');
   let navigate = useNavigate();
+  document.title = 'Class';
 
   useEffect(() => {
     const getAllClassrooms = async (e) => {

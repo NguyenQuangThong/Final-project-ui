@@ -6,6 +6,7 @@ const Login = () => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   let navigate = useNavigate();
+  document.title = 'Login page';
 
   const handleUserName = (e) => {
     setUserName(e.target.value);

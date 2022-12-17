@@ -6,6 +6,7 @@ function ChangeForgotPassword() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   let navigate = useNavigate();
+  document.title = 'Change password';
 
   const handleCode = (e) => {
     setCode(e.target.value);

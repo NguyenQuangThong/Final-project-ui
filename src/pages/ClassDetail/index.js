@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 function ClassDetail() {
   let user = JSON.parse(localStorage.getItem('user'));
   let navigate = useNavigate();
+  document.title = 'Class detail';
+
   if (user === null) navigate('/login');
   else {
     const token = localStorage.getItem('token');

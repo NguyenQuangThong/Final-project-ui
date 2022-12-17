@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 function Home() {
+  document.title = 'Home page';
   return (
     <div className="home" style={{ textAlign: 'center' }}>
       <div class="row">

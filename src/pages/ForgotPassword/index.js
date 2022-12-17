@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function ForgotPassword() {
   const [email, setEmail] = useState('');
   let navigate = useNavigate;
+  document.title = 'Forgot password';
 
   const handleEmail = (e) => {
     setEmail(e.target.value);

@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 function File() {
   let user = JSON.parse(localStorage.getItem('user'));
   let navigate = useNavigate();
+  document.title = 'File sharing';
+
   if (user === null) navigate('/login');
   else {
     let classroom = JSON.parse(localStorage.getItem('classroom'));

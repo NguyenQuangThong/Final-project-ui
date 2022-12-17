@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [username, setUserName] = useState('');
@@ -7,6 +8,9 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  document.title = 'Sign up page';
+  let navigate = useNavigate();
+
   const handleUserName = (e) => {
     setUserName(e.target.value);
   };
@@ -36,7 +40,7 @@ function Signup() {
         })
         .then((response) => {
           alert('Sign up success');
-          window.location.replace('/');
+          navigate('/');
         })
         .catch((err) => {
           alert('Username has already taken!');

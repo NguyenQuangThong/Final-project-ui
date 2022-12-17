@@ -7,6 +7,7 @@ function Profile() {
   let user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   let navigate = useNavigate();
+  document.title = 'Profile page';
 
   function isTokenExpired(token) {
     const expiry = JSON.parse(atob(token.split('.')[1])).exp;

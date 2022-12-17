@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 function Meeting() {
   var peerConnection;
   let navigate = useNavigate();
+  document.title = 'Meeting room';
 
   function leave() {
     console.log('Ending call');
@@ -21,7 +22,7 @@ function Meeting() {
     navigate('/class/detail');
   }
 
-  var signalingWebsocket = new WebSocket('ws://localhost:8080/signal');
+  var signalingWebsocket = new WebSocket('wss://finalproject-production-a91d.up.railway.app/signal');
 
   signalingWebsocket.onmessage = function (msg) {
     console.log('Got message', msg.data);

@@ -4,7 +4,8 @@ import App from '~/App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from '~/components/GlobalStyles';
 const root = ReactDOM.createRoot(document.getElementById('root'));
-window.DOMAIN = 'http://localhost:8080';
+// window.DOMAIN = 'http://localhost:8080';
+window.DOMAIN = 'https://finalproject-production-a91d.up.railway.app';
 root.render(
   // <GlobalStyles>
   <App></App>,
