@@ -84,6 +84,23 @@ function ClassManage() {
       console.log(accountList);
     };
 
+    let a, b, c, d;
+    if (user.accountId === classroom.roomOwner.accountId) {
+      console.log(user.accountId === classroom.roomOwner.accountId);
+      a = (
+        <a onClick={getMemberNotInClass} href="#exampleModal1" data-bs-target="#exampleModal1" data-bs-toggle="modal">
+          <FontAwesomeIcon icon={faCirclePlus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
+        </a>
+      );
+      b = (
+        <a onClick={removeMember}>
+          <FontAwesomeIcon icon={faCircleMinus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
+        </a>
+      );
+
+      d = <h3>You can modify this team in here.</h3>;
+    } else d = <h3>You can get information of this team in here.</h3>;
+
     return (
       <div>
         <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -120,14 +137,10 @@ function ClassManage() {
 
         <div style={{ textAlign: 'center' }} className="sticky-top">
           <h1>Welcome to group_{className}</h1>
-          <h3>You can modify this team in here.</h3>
-          <a onClick={getMemberNotInClass} href="#exampleModal1" data-bs-target="#exampleModal1" data-bs-toggle="modal">
-            <FontAwesomeIcon icon={faCirclePlus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
-          </a>
+          {d}
+          {a}
           &nbsp;
-          <a onClick={removeMember}>
-            <FontAwesomeIcon icon={faCircleMinus} style={{ width: 50, height: 50 }}></FontAwesomeIcon>
-          </a>
+          {b}
         </div>
         <br></br>
         <table class="table table-dark table-striped">
@@ -160,11 +173,14 @@ function ClassManage() {
               <td>Owner</td>
             </tr>
             {roomMembers.map((item, index) => {
+              if (user.accountId === classroom.roomOwner.accountId)
+                c = <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />;
               return (
                 <tr>
                   <th scope="row">{index + 2}</th>
                   <th scope="row">
-                    <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} />
+                    {c}
+                    {/* <input class="form-check-input" type="checkbox" value={item.accountId} onChange={isChecked} /> */}
                   </th>
                   <td>
                     <Link

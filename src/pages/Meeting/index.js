@@ -14,6 +14,7 @@ function Meeting() {
   var peerConnection;
   let navigate = useNavigate();
   document.title = 'Meeting room';
+  let user = JSON.parse(localStorage.getItem('user'));
 
   function leave() {
     console.log('Ending call');
@@ -281,7 +282,7 @@ function Meeting() {
         <div className="row">
           <div className="col" style={{ textAlign: 'center' }}>
             <div>
-              <h3 style={{ margin: 5 }}>You</h3>
+              <h3 style={{ margin: 5 }}>{user.username}(You)</h3>
               <video
                 style={{ width: 'auto', height: '20vh' }}
                 id="local"

@@ -65,6 +65,10 @@ function Request() {
         .catch((err) => alert('Some errors have been found!'));
     };
 
+    const other = (e) => {
+      localStorage.setItem('otherId', e);
+    };
+
     return (
       <div>
         <h1 style={{ textAlign: 'center' }}>You can modify the request from here.</h1>
@@ -82,6 +86,7 @@ function Request() {
                       rel="noopener noreferrer"
                       to="/other-profile"
                       style={{ textDecoration: 'none' }}
+                      onClick={() => other(item.requester.accountId)}
                     >
                       <img
                         src={window.DOMAIN + '/' + item.requester.avatar}
@@ -99,6 +104,7 @@ function Request() {
                       rel="noopener noreferrer"
                       to="/other-profile"
                       style={{ textDecoration: 'none' }}
+                      onClick={() => other(item.member.accountId)}
                     >
                       <img
                         src={window.DOMAIN + '/' + item.member.avatar}

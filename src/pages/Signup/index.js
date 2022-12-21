@@ -93,7 +93,7 @@ function Signup() {
                   </div>
                   <div class="form-group mb-3">
                     <label class="label" for="fullname">
-                      Email(*)
+                      Email
                     </label>
                     <input type="email" class="form-control" placeholder="Email" value={email} onChange={handleEmail} />
                   </div>

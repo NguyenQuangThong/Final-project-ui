@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
-  let navigate = useNavigate;
+  let navigate = useNavigate();
   document.title = 'Forgot password';
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     var sender = new FormData();
@@ -17,7 +18,7 @@ function ForgotPassword() {
     await axios
       .post(window.DOMAIN + '/accounts/forgot-password', sender)
       .then((response) => {
-        if (response.data != null) {
+        if (response.data !== null) {
           localStorage.setItem('userId', response.data);
           alert('Please check your email for the code!');
           navigate('/forgot-password/change');
@@ -25,6 +26,7 @@ function ForgotPassword() {
       })
       .catch((err) => {
         alert('Cannot find your email! Please try again!');
+        console.log(err);
       });
   };
   return (

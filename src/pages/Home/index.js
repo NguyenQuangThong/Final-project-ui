@@ -17,6 +17,8 @@ function Home() {
           <h1 className="" style={{ color: 'darkgray' }}>
             <b>E-LEARNING</b>
           </h1>
+          <p>Admin account: admin </p>
+          <p>Password: 123</p>
         </div>
         <div class="col" style={{ marginTop: 90 }}>
           <img

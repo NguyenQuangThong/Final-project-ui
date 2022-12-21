@@ -31,9 +31,19 @@ function Header() {
     );
   else {
     if (isTokenExpired(token)) {
-      alert('Your session has been ended!');
+      alert('Your session has been expired!');
       logout();
     }
+    let adminNav;
+    if (user.role === 'Admin')
+      adminNav = (
+        <li className="nav-item">
+          <Link className="nav-link active" to="/admin">
+            Admin page
+          </Link>
+        </li>
+      );
+
     let avatar = window.DOMAIN + '/' + user.avatar;
     navElement = (
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -47,6 +57,7 @@ function Header() {
             Requests
           </Link>
         </li>
+        {adminNav}
       </ul>
     );
     button = (

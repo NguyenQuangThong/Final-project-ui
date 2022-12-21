@@ -12,13 +12,11 @@ function ClassDetail() {
   else {
     const token = localStorage.getItem('token');
     const [posts, setPosts] = useState([]);
-    const [avatar, setAvatar] = useState('');
     const [fatherId, setFatherId] = useState('');
     const [fatherName, setFatherName] = useState('');
     const [fatherComment, setFatherComment] = useState('');
     const [reply, setReply] = useState('');
     const [postId, setPostId] = useState('');
-    const [otherId, setOtherId] = useState('');
     let childPosts = [];
     let classroom = JSON.parse(localStorage.getItem('classroom'));
 
@@ -26,12 +24,17 @@ function ClassDetail() {
 
     let className = classroom.className;
 
+    useEffect(() => {
+      const getPostOfClass = async (e) => {
+        await axios
+          .get(window.DOMAIN + '/posts/of/' + classroom.classroomId)
+          .then((response) => setPosts(response.data));
+      };
+      getPostOfClass();
+    }, [classroom.classroomId]);
+
     const other = (e) => {
       localStorage.setItem('otherId', e);
-    };
-
-    const getAvatar = (id) => {
-      axios.get(window.DOMAIN + '/accounts/' + id).then((response) => setAvatar(response.data.avatar));
     };
 
     const getFatherId = (id) => {
@@ -56,7 +59,6 @@ function ClassDetail() {
 
     const createReply = async (e) => {
       e.preventDefault();
-      console.log(reply);
       await axios
         .post(window.DOMAIN + '/child-posts', {
           content: reply,
@@ -66,15 +68,6 @@ function ClassDetail() {
         .then((response) => window.location.reload())
         .catch((err) => alert('Some errors have been found!'));
     };
-
-    useEffect(() => {
-      const getPostOfClass = async (e) => {
-        await axios
-          .get(window.DOMAIN + '/posts/of/' + classroom.classroomId)
-          .then((response) => setPosts(response.data));
-      };
-      getPostOfClass();
-    }, []);
 
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -87,7 +80,7 @@ function ClassDetail() {
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
-                  Reply to {fatherName}: "{fatherComment}"
+                  Reply to <b>{fatherName}</b>: "{fatherComment}"
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
@@ -128,12 +121,12 @@ function ClassDetail() {
           </div>
           {posts.map((item, index) => {
             childPosts = item.childPosts;
-            getAvatar(item.account.accountId);
+
             return (
               <div className="blog-comment">
                 <ul class="comments">
                   <li class="clearfix">
-                    <img src={window.DOMAIN + '/' + avatar} class="avatar" alt="" />
+                    <img src={window.DOMAIN + '/' + item.account.avatar} class="avatar" alt="" />
                     <div class="post-comments">
                       <p class="meta">
                         {new Date(item.timestamp).toString()}{' '}
@@ -165,12 +158,11 @@ function ClassDetail() {
                     </div>
                   </li>
                   {childPosts.map((item, index) => {
-                    getAvatar(item.account.accountId);
                     if (item !== null) {
                       return (
                         <ul>
                           <li class="clearfix">
-                            <img src={window.DOMAIN + '/' + avatar} class="avatar" alt="" />
+                            <img src={window.DOMAIN + '/' + item.account.avatar} class="avatar" alt="" />
                             <div class="post-comments">
                               <p class="meta">
                                 {new Date(item.timestamp).toString()}{' '}
@@ -203,7 +195,7 @@ function ClassDetail() {
                         </ul>
                       );
                     }
-                    return;
+                    return false;
                   })}
                 </ul>
               </div>

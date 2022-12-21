@@ -16,6 +16,8 @@ import OtherProfile from '~/pages/OtherProfile';
 import ClassDetailLayout from '~/components/Layout/ClassDetailLayout';
 import User from '~/pages/Admin/User';
 import Admin from '~/pages/Admin';
+import Classes from '~/pages/Admin/Classes';
+import Files from '~/pages/Admin/Files';
 
 const publicRoutes = [
   { path: '/', component: Home },
@@ -32,7 +34,9 @@ const publicRoutes = [
   { path: '/class/request', component: Request, layout: HeaderOnly },
   { path: '/other-profile', component: OtherProfile, layout: HeaderOnly },
   { path: '/admin', component: Admin, layout: HeaderOnly },
-  { path: '/admin/users', component: User, layout: HeaderOnly },
+  { path: '/admin/user', component: User, layout: HeaderOnly },
+  { path: '/admin/class', component: Classes, layout: HeaderOnly },
+  { path: '/admin/file', component: Files, layout: HeaderOnly },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

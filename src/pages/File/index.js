@@ -19,7 +19,7 @@ function File() {
 
     useEffect(() => {
       const getFileByClassId = async (e) => {
-        await axios.get(window.DOMAIN + '/files').then((response) => {
+        await axios.get(window.DOMAIN + '/files/classrooms/' + classroom.classroomId).then((response) => {
           setFiles(response.data);
         });
       };
@@ -28,7 +28,8 @@ function File() {
 
     const fileHandle = (e) => {
       e.preventDefault();
-      setContent(e.target.files[0]);
+      const a = [...e.target.files];
+      setContent(a);
     };
 
     const deleteFile = (e) => {
@@ -47,7 +48,8 @@ function File() {
       var data = new FormData();
       data.append('accountId', user.accountId);
       data.append('classroomId', classroom.classroomId);
-      data.append('file', content);
+      console.log(content);
+      for (var i = 0; i < content.length; i++) data.append('files', content[i]);
       axios
         .post(window.DOMAIN + '/files', data, {
           headers: {
@@ -72,7 +74,15 @@ function File() {
             onSubmit={fileUpload}
             style={{ backgroundColor: 'darkgray', borderRadius: 20, width: 400, textAlign: 'center', margin: 'auto' }}
           >
-            <input type="file" onChange={fileHandle} name="file" id="file" required style={{ borderRadius: 20 }} />
+            <input
+              type="file"
+              onChange={fileHandle}
+              name="file"
+              id="file"
+              required
+              style={{ borderRadius: 20 }}
+              multiple
+            />
             <button type="submit" className="btn btn-primary" style={{ borderRadius: 20 }}>
               Upload
             </button>
@@ -88,6 +98,7 @@ function File() {
                 <th scope="col"></th>
                 <th scope="col">Modified</th>
                 <th scope="col">Modified by</th>
+                <th scope="col">Size</th>
               </tr>
             </thead>
             {files.map((item, index) => {
@@ -149,6 +160,7 @@ function File() {
                     </td>
                     <td>{ts.toString()}</td>
                     <td>{item.account.username}</td>
+                    <td>{item.size} MB</td>
                   </tr>
                 </tbody>
               );
