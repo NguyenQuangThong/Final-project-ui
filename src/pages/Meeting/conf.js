@@ -119,6 +119,7 @@ function conf() {
 
       // Send offer signal to signaling server endpoint.
       sendOfferSignal();
+
       return stream;
     } catch (e) {
       alert(`getUserMedia() error: ${e.name}`);

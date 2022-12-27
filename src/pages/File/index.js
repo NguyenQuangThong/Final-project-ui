@@ -12,6 +12,7 @@ function File() {
   if (user === null) navigate('/login');
   else {
     let classroom = JSON.parse(localStorage.getItem('classroom'));
+    let className = classroom.className;
 
     if (classroom === null) navigate('/');
     const [files, setFiles] = useState([]);
@@ -70,6 +71,8 @@ function File() {
     return (
       <div className="container-fluid">
         <div style={{ textAlign: 'center' }} className="container">
+          <h1>Welcome to Group_{className}</h1>
+          <br></br>
           <form
             onSubmit={fileUpload}
             style={{ backgroundColor: 'darkgray', borderRadius: 20, width: 400, textAlign: 'center', margin: 'auto' }}

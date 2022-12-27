@@ -7,25 +7,48 @@ import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { faLinkSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Meeting() {
   var peerConnection;
   let navigate = useNavigate();
   document.title = 'Meeting room';
   let user = JSON.parse(localStorage.getItem('user'));
+  let classroom = JSON.parse(localStorage.getItem('classroom'));
+  let className = classroom.className;
+  const [otherUser, setOtherUser] = useState('Other');
+  let count = 0;
+  let count1 = 0;
+  const [linkTag, setLinkTag] = useState(
+    <h1 style={{ margin: 5 }}>
+      <Link target="_blank" rel="noopener noreferrer" to="/other-profile" style={{ textDecoration: 'none' }}>
+        Participant
+      </Link>
+    </h1>,
+  );
 
   function leave() {
     console.log('Ending call');
     peerConnection.close();
     signalingWebsocket.close();
+    const localVideo = document.getElementById('local');
+    const mediaStream = localVideo.srcObject;
+    const tracks = mediaStream.getTracks();
+    tracks.forEach((track) => track.stop());
+    localStorage.removeItem('otherId');
     navigate('/class/detail');
   }
 
   var signalingWebsocket = new WebSocket('wss://finalproject-production-a91d.up.railway.app/signal');
 
   signalingWebsocket.onmessage = function (msg) {
+    if (Object.keys(JSON.parse(msg.data)).length === 6 && count < 1) {
+      localStorage.setItem('otherId', JSON.parse(msg.data).accountId);
+      count++;
+    }
+
     console.log('Got message', msg.data);
     var signal = JSON.parse(msg.data);
     switch (signal.type) {
@@ -42,9 +65,10 @@ function Meeting() {
       default:
         break;
     }
+    if (count1 < 1) if (window.confirm('You have a call. Do you want to take it?')) disPlayLocalVideoStream(true);
   };
 
-  signalingWebsocket.onopen = init();
+  // signalingWebsocket.onopen = init();
 
   function sendSignal(signal) {
     if (signalingWebsocket.readyState === 1) {
@@ -58,7 +82,6 @@ function Meeting() {
   function init() {
     console.log('Connected to signaling endpoint. Now initializing.');
     preparePeerConnection();
-    // displayLocalStreamAndSignal(true);
   }
 
   /*
@@ -86,6 +109,10 @@ function Meeting() {
       }
     };
 
+    signalingWebsocket.addEventListener('open', (e) => signalingWebsocket.send(JSON.stringify(user)));
+
+    // };
+
     /*
      * Track other participant's remote stream & display in UI when available.
      *
@@ -100,10 +127,10 @@ function Meeting() {
    * Display my local webcam & audio on UI.
    */
 
-  //   useEffect(() => {
-  //     const displayLocalStreamAndSignal = async ()
-  //   })
   const disPlayLocalVideoStream = async (firstTime) => {
+    count1++;
+    signalingWebsocket.onopen = init();
+
     console.log('Requesting local stream');
     const localVideo = document.getElementById('local');
     let localVideoStream;
@@ -116,37 +143,67 @@ function Meeting() {
         video: true,
       });
 
-      // const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      //   audio: true,
-      //   video: true,
-      // });
-
       console.log('Received local stream');
       localVideo.srcObject = videoStream;
       localVideoStream = videoStream;
       logVideoAudioTrackInfo(localVideoStream);
       console.log('Local:' + videoStream);
 
-      // remoteScreen.srcObject = remoteScreenStream;
-      // remoteScreenStream = screenStream;
-      // logVideoAudioTrackInfo(remoteScreenStream);
-      // console.log('Remote:' + remoteScreen);
-
       // For first time, add local stream to peer connection.
       if (firstTime) {
         setTimeout(function () {
           addLocalStreamToPeerConnection(localVideoStream);
-          // addLocalStreamToPeerConnection(remoteScreenStream);
         }, 2000);
       }
 
       // Send offer signal to signaling server endpoint.
       sendOfferSignal();
-      // return stream;
+      return videoStream;
     } catch (e) {
       alert(`getUserMedia() error: ${e.name}`);
       throw e;
     }
+    console.log('Start complete');
+  };
+
+  // Display my screen on my UI
+  const disPlayLocalScreenStream = async (firstTime) => {
+    // preparePeerConnection();
+
+    console.log('Requesting local stream');
+    const localScreen = document.getElementById('local');
+    let localScreenStream;
+
+    // Capture local video & audio stream & set to local <video> DOM
+    // element
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        audio: true,
+        video: { width: { ideal: 1920, max: 1920 }, height: { ideal: 1080, max: 1080 } },
+      });
+
+      const localVideo = document.getElementById('local');
+      const mediaStream = localVideo.srcObject;
+      const tracks = mediaStream.getTracks();
+      tracks.forEach((track) => track.stop());
+
+      let videoTrack = screenStream.getVideoTracks()[0];
+      let sender = peerConnection.getSenders().find(function (s) {
+        return s.track.kind === videoTrack.kind;
+      });
+      sender.replaceTrack(videoTrack);
+
+      // peerConnection.getLocalStreams().forEach(function (stream) {
+      //   peerConnection.removeStream(stream);
+      // });
+
+      console.log('Received local stream');
+      localScreen.srcObject = screenStream;
+      localScreenStream = screenStream;
+      logVideoAudioTrackInfo(localScreenStream);
+      console.log('Local:' + screenStream);
+    } catch (e) {}
+
     console.log('Start complete');
   };
 
@@ -167,15 +224,11 @@ function Meeting() {
    */
   function displayRemoteStream(e) {
     console.log('displayRemoteStream');
-    const remoteVideo = document.getElementById('remote');
-    // const remoteScreen = document.getElementById('remoteScreen');
-    if (remoteVideo.srcObject !== e.streams[0]) {
-      remoteVideo.srcObject = e.streams[0];
+    const remote = document.getElementById('remote');
+    if (remote.srcObject !== e.streams[0]) {
+      remote.srcObject = e.streams[0];
       console.log('pc2 received remote stream');
     }
-    // if (remoteScreen.srcObject !== e.streams[0]) {
-    //   remoteScreen.srcObject = e.streams[0];
-    // }
   }
 
   /*
@@ -184,6 +237,8 @@ function Meeting() {
    * view & hear me using 'track' event.
    */
   function sendOfferSignal() {
+    console.log('Send user');
+    signalingWebsocket.send(JSON.stringify(user));
     peerConnection.createOffer(
       function (offer) {
         sendSignal(offer);
@@ -249,6 +304,44 @@ function Meeting() {
     }
   }
 
+  const turnOffScreenShare = async (e) => {
+    console.log('Requesting local stream');
+    const localVideo = document.getElementById('local');
+    let localVideoStream;
+
+    // Capture local video & audio stream & set to local <video> DOM
+    // element
+    try {
+      const videoStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+
+      const local = document.getElementById('local');
+      const mediaStream = local.srcObject;
+      const tracks = mediaStream.getTracks();
+      tracks.forEach((track) => track.stop());
+
+      let videoTrack = videoStream.getVideoTracks()[0];
+      let sender = peerConnection.getSenders().find(function (s) {
+        return s.track.kind === videoTrack.kind;
+      });
+      sender.replaceTrack(videoTrack);
+
+      // peerConnection.getLocalStreams().forEach(function (stream) {
+      //   peerConnection.removeStream(stream);
+      // });
+
+      console.log('Received local stream');
+      localVideo.srcObject = videoStream;
+      localVideoStream = videoStream;
+      logVideoAudioTrackInfo(localVideoStream);
+      console.log('Local:' + videoStream);
+    } catch (e) {}
+
+    console.log('Start complete');
+  };
+
   const turnOffCamera = (e) => {
     document.getElementById('local').captureStream().getVideoTracks()[0].enabled = false;
   };
@@ -270,9 +363,12 @@ function Meeting() {
       <div className="container">
         <div className="row">
           <div className="col" style={{ textAlign: 'center' }}>
-            <h3 style={{ margin: 5 }}>Other</h3>
+            <h1>Welcome to Group_{className}</h1>
+            <br></br>
+            {/* <h3 style={{ margin: 5 }}>{otherUser}</h3> */}
+            {linkTag}
             <video
-              style={{ width: '30vh', height: '30vh' }}
+              style={{ width: '150vh', height: '50vh' }}
               id="remote"
               poster="https://img.icons8.com/fluent/48/000000/person-male.png"
               autoPlay
@@ -304,23 +400,12 @@ function Meeting() {
           <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
         </button>
         &nbsp;
-        <button
-          className="btn btn-primary"
-          onClick={async () => {
-            let localVideoStream;
-            const screenStream = await navigator.mediaDevices.getDisplayMedia({
-              audio: true,
-              video: true,
-            });
-
-            console.log('Received local stream');
-            localVideoStream = screenStream;
-            logVideoAudioTrackInfo(localVideoStream);
-            console.log('Local:' + screenStream);
-            addLocalStreamToPeerConnection(true);
-          }}
-        >
+        <button className="btn btn-primary" onClick={() => disPlayLocalScreenStream(false)}>
           <FontAwesomeIcon icon={faShareFromSquare}></FontAwesomeIcon>
+        </button>
+        &nbsp;
+        <button className="btn btn-primary" onClick={turnOffScreenShare}>
+          <FontAwesomeIcon icon={faLinkSlash}></FontAwesomeIcon>
         </button>
         &nbsp;
         <button className="btn btn-primary" onClick={turnOffCamera}>
