@@ -41,7 +41,7 @@ function Meeting() {
     navigate('/class/detail');
   }
 
-  var signalingWebsocket = new WebSocket('wss://finalproject-production-a91d.up.railway.app/signal');
+  var signalingWebsocket = new WebSocket('wss://finalproject-production-7827.up.railway.app/signal');
 
   signalingWebsocket.onmessage = function (msg) {
     if (Object.keys(JSON.parse(msg.data)).length === 6 && count < 1) {
