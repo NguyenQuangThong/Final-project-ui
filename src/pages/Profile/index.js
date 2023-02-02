@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Profile() {
   let user = JSON.parse(localStorage.getItem('user'));
@@ -23,12 +23,12 @@ function Profile() {
     }
     let username = user.username;
     let userId = user.accountId;
-    const [content, setContent] = useState(null);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [fullName, setFullName] = useState(user.fullName);
     const [email, setEmail] = useState(user.email);
+    const [avatar, setAvatar] = useState(window.DOMAIN + '/' + user.avatar);
 
     const handleOldPassword = (e) => {
       setOldPassword(e.target.value);
@@ -46,8 +46,6 @@ function Profile() {
       });
     };
 
-    let avatar = window.DOMAIN + '/' + user.avatar;
-
     const handleFullName = (e) => {
       setFullName(e.target.value);
     };
@@ -57,7 +55,23 @@ function Profile() {
     };
 
     const handleAvatar = (e) => {
-      setContent(e.target.files[0]);
+      var data = new FormData();
+      data.append('avatar', e.target.files[0]);
+      axios
+        .put(window.DOMAIN + '/accounts/avatar/' + userId, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          getAccount();
+          setAvatar(URL.createObjectURL(e.target.files[0]));
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log(err.response);
+          alert('Something wrong');
+        });
     };
 
     const handleSubmit = (e) => {
@@ -65,13 +79,8 @@ function Profile() {
       var data = new FormData();
       data.append('fullName', fullName);
       data.append('email', email);
-      data.append('avatar', content);
       axios
-        .put(window.DOMAIN + '/accounts/' + userId, data, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
+        .put(window.DOMAIN + '/accounts/' + userId, data)
         .then((response) => {
           getAccount();
           alert('Update profile successfully!');
@@ -196,9 +205,10 @@ function Profile() {
                             name="image"
                             id="image"
                             style={{ borderRadius: 20 }}
+                            hidden
                           />
                         </div>
-                        <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} />
+                        <img src={avatar} alt="avatar" style={{ width: 150, height: 150, borderRadius: '50%' }} />
                       </label>
                       <h4>{username}</h4>
                     </div>
@@ -234,9 +244,7 @@ function Profile() {
                         <button
                           type="submit"
                           class="form-control btn btn-primary rounded submit px-3"
-                          disabled={
-                            user.fullName === fullName && user.email === email && content === null ? true : false
-                          }
+                          disabled={user.fullName === fullName && user.email === email ? true : false}
                         >
                           OK
                         </button>
@@ -254,6 +262,12 @@ function Profile() {
                         </a>
                       </div>
                     </form>
+                    <br></br>
+                    <div style={{ textAlign: 'center' }}>
+                      <a href="/" style={{ textDecoration: 'none' }}>
+                        Back to home
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

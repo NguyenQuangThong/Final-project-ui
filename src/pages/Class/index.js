@@ -11,6 +11,7 @@ function Class() {
   const [classId, setClassId] = useState('');
   const [members, setMembers] = useState([]);
   const [roomOwnerId, setRoomOwnerId] = useState('');
+  const [classCode, setClassCode] = useState('');
   let navigate = useNavigate();
   document.title = 'Class';
 
@@ -28,6 +29,10 @@ function Class() {
 
     const handleClassName = (e) => {
       setClassName(e.target.value);
+    };
+
+    const handleClassCode = (e) => {
+      setClassCode(e.target.value);
     };
 
     const getMemberNotInClass = async (e) => {
@@ -54,6 +59,21 @@ function Class() {
         })
         .catch((err) => {
           alert('Create new class failed!');
+        });
+    };
+
+    const joinClassroom = (e) => {
+      e.preventDefault();
+      var code = new FormData();
+      code.append('code', classCode);
+      axios
+        .post(window.DOMAIN + '/classrooms/join/' + user.accountId, code)
+        .then((response) => {
+          alert('Join class successfuly!');
+          window.location.reload();
+        })
+        .catch((err) => {
+          alert('Invalid class code!');
         });
     };
 
@@ -149,7 +169,7 @@ function Class() {
             },
           })
           .then((response) => {
-            navigate('/class');
+            window.location.reload();
           })
           .catch((err) => alert('Some errors was found!'));
       }
@@ -300,17 +320,69 @@ function Class() {
           </div>
         </div>
 
+        {/* Join class */}
+        <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Join class with code
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form class="signin-form" onSubmit={joinClassroom}>
+                  <div class="form-group mb-3">
+                    <label class="label" for="name">
+                      Class code
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Class code"
+                      value={classCode}
+                      onChange={handleClassCode}
+                      required
+                    />
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary rounded submit px-3">
+                      Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
+                      Close
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div style={{ marginTop: '10px' }} className="container-fluid">
           <h4 style={{ display: 'inline-block' }}>Class:</h4>
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            style={{ display: 'inline-block', float: 'right' }}
-          >
-            Create new class
-          </button>
+          <div style={{ float: 'right' }}>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              style={{ display: 'inline-block' }}
+            >
+              Create new class
+            </button>
+            &nbsp;
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal3"
+              style={{ display: 'inline-block' }}
+            >
+              Join class with code
+            </button>
+          </div>
         </div>
         <div class="row container">
           {classes.map((item, index) => {
@@ -413,6 +485,9 @@ function Class() {
                       </p>
                       <p>
                         <b>Room owner:</b> {item.roomOwner.username}
+                      </p>
+                      <p>
+                        <b>Class code:</b> {item.classCode}
                       </p>
 
                       <button class="btn btn-primary" onClick={classDetail} value={item.classroomId}>
