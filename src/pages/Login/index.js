@@ -91,7 +91,7 @@ const Login = () => {
                     <Link to="/forgot-password">Forgot Password</Link>
                   </div>
                   <p style={{ display: 'inline', float: 'right' }}>
-                    Not a member?
+                    Not a member? &nbsp;
                     <Link to="/signup">Sign Up</Link>
                   </p>
                 </div>

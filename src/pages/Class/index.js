@@ -275,7 +275,7 @@ function Class() {
 
                   <div class="modal-footer">
                     <button type="submit" class="btn btn-primary rounded submit px-3">
-                      Submit
+                      Create
                     </button>
                     <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
                       Close
@@ -348,7 +348,7 @@ function Class() {
 
                   <div class="modal-footer">
                     <button type="submit" class="btn btn-primary rounded submit px-3">
-                      Submit
+                      Join
                     </button>
                     <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
                       Close

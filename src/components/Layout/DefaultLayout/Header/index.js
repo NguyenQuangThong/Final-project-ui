@@ -19,15 +19,17 @@ function Header() {
 
   if (user == null)
     button = (
-      <>
-        <Link className="btn btn-success" role="button" to="/login">
-          Sign in
-        </Link>
-        &nbsp;
-        <Link className="btn btn-success" role="button" to="/signup">
-          Sign up
-        </Link>
-      </>
+      <div className="container-fluid">
+        <div style={{ float: 'right' }}>
+          <Link className="btn btn-success" role="button" to="/login">
+            Sign in
+          </Link>
+          &nbsp;
+          <Link className="btn btn-success" role="button" to="/signup">
+            Sign up
+          </Link>
+        </div>
+      </div>
     );
   else {
     if (isTokenExpired(token)) {
