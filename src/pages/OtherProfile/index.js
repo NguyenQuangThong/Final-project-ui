@@ -58,9 +58,8 @@ function OtherProfile() {
                       </div>
                     </div>
                     <div class="text-center">
-                      {/* <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} /> */}
                       <label for="image">
-                        <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} />
+                        <img src={avatar} alt="avatar" style={{ width: 150, height: 150, borderRadius: '50%' }} />
                       </label>
                       <h4>{other.username}</h4>
                     </div>

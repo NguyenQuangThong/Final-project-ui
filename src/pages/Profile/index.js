@@ -233,7 +233,7 @@ function Profile() {
                         <input
                           type="text"
                           class="form-control"
-                          placeholder="Full name"
+                          placeholder="Email"
                           value={email}
                           onChange={handleEmail}
                           required

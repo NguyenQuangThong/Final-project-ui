@@ -20,7 +20,9 @@ function ClassDetailFooter() {
         accountId: userId,
         classroomId: classId,
       })
-      .then(() => window.location.reload())
+      .then(() => {
+        document.getElementById('addANote').value = '';
+      })
       .catch((err) => alert('Some errors have been found!'));
   };
 
