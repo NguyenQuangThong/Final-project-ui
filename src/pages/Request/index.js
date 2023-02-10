@@ -13,14 +13,11 @@ function Request() {
     const [requests, setRequests] = useState([]);
 
     useEffect(() => {
-      const getRequestByRoomOwnerId = async (e) => {
-        await axios
-          .get(window.DOMAIN + '/requests/room-owner/' + user.accountId)
-          .then((response) => setRequests(response.data))
-          .catch((err) => alert('Some errors have been found!'));
-      };
-      getRequestByRoomOwnerId();
-    }, [user.accountId]);
+      axios
+        .get(window.DOMAIN + '/requests/room-owner/' + user.accountId)
+        .then((response) => setRequests(response.data))
+        .catch((err) => alert('Some errors have been found!'));
+    }, [requests]);
 
     let table = '';
     if (requests.length === 0) table = <h3 style={{ textAlign: 'center' }}>You have no requests.</h3>;
@@ -49,7 +46,6 @@ function Request() {
             .delete(window.DOMAIN + '/requests/' + e.target.value[4])
             .then(() => {
               alert('Request has been accepted!');
-              window.location.reload();
             })
             .catch((err) => alert('Some errors have been found!'));
         });
@@ -60,7 +56,6 @@ function Request() {
         .delete(window.DOMAIN + '/requests/' + e.target.value)
         .then(() => {
           alert('Request has been denied!');
-          window.location.reload();
         })
         .catch((err) => alert('Some errors have been found!'));
     };

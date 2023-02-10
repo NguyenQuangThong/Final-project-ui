@@ -19,13 +19,10 @@ function File() {
     const [content, setContent] = useState(null);
 
     useEffect(() => {
-      const getFileByClassId = async (e) => {
-        await axios.get(window.DOMAIN + '/files/classrooms/' + classroom.classroomId).then((response) => {
-          setFiles(response.data);
-        });
-      };
-      getFileByClassId();
-    }, []);
+      axios.get(window.DOMAIN + '/files/classrooms/' + classroom.classroomId).then((response) => {
+        setFiles(response.data);
+      });
+    }, [files]);
 
     const fileHandle = (e) => {
       e.preventDefault();
@@ -39,7 +36,6 @@ function File() {
           .delete(window.DOMAIN + '/files/delete/' + e)
           .then((response) => {
             alert('File deleted!');
-            window.location.reload();
           })
           .catch((err) => alert('Some errors have been found!'));
     };
@@ -59,7 +55,6 @@ function File() {
         })
         .then((response) => {
           alert('Upload file successfully!');
-          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -129,6 +124,7 @@ function File() {
                         <ul class="dropdown-menu">
                           <li>
                             <a
+                              href="javascript:;"
                               class="dropdown-item"
                               onClick={() => {
                                 const method = 'GET';
@@ -154,7 +150,7 @@ function File() {
                             </a>
                           </li>
                           <li>
-                            <a onClick={() => deleteFile(item.fileId)} className="dropdown-item">
+                            <a onClick={() => deleteFile(item.fileId)} className="dropdown-item" href="javascript:;">
                               Delete
                             </a>
                           </li>

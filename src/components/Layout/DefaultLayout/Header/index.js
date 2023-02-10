@@ -1,9 +1,24 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 function Header() {
   let user = JSON.parse(localStorage.getItem('user'));
   let button;
   let navElement;
   let navigate = useNavigate();
+  const [profile, setProfile] = useState([]);
+
+  useEffect(() => {
+    if (user !== null) {
+      axios
+        .get(window.DOMAIN + '/accounts/' + user.accountId)
+        .then((response) => {
+          setProfile(response.data);
+          localStorage.setItem('user', JSON.stringify(response.data));
+        })
+        .catch();
+    }
+  }, [profile]);
 
   let logout = () => {
     localStorage.clear();
@@ -17,7 +32,7 @@ function Header() {
     return Math.floor(new Date().getTime() / 1000) >= expiry;
   }
 
-  if (user == null)
+  if (user == null || token == null)
     button = (
       <div className="container-fluid">
         <div style={{ float: 'right' }}>
@@ -62,13 +77,12 @@ function Header() {
       </ul>
     );
 
-    let avatar = window.DOMAIN + '/' + user.avatar;
     button = (
       <>
         <h4 style={{ color: 'white' }}>Hi! {user.username} </h4>
         &nbsp;
         <Link to="/profile">
-          <img src={avatar} className="avatar" alt="An avatar"></img>
+          <img src={window.DOMAIN + '/' + profile.avatar} className="avatar" alt="An avatar"></img>
         </Link>
         &nbsp;
         <button className="btn btn-danger" onClick={logout}>

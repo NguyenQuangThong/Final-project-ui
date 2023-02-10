@@ -110,7 +110,6 @@ function ClassDetail() {
         let modal = '';
         if (item.childPostId !== undefined) modal = '#exampleModal2';
         else modal = '#exampleModal1';
-        console.log(item);
         modifier = (
           <>
             &nbsp;

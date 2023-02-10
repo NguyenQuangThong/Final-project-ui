@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Profile() {
@@ -28,7 +28,17 @@ function Profile() {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [fullName, setFullName] = useState(user.fullName);
     const [email, setEmail] = useState(user.email);
-    const [avatar, setAvatar] = useState(window.DOMAIN + '/' + user.avatar);
+    const [profile, setProfile] = useState([]);
+
+    useEffect(() => {
+      axios
+        .get(window.DOMAIN + '/accounts/' + userId)
+        .then((response) => {
+          setProfile(response.data);
+          localStorage.setItem('user', JSON.stringify(response.data));
+        })
+        .catch();
+    }, [profile]);
 
     const handleOldPassword = (e) => {
       setOldPassword(e.target.value);
@@ -38,12 +48,6 @@ function Profile() {
     };
     const handleConfirmNewPassword = (e) => {
       setConfirmNewPassword(e.target.value);
-    };
-
-    const getAccount = async (e) => {
-      await axios.get(window.DOMAIN + '/accounts/' + userId).then((response) => {
-        localStorage.setItem('user', JSON.stringify(response.data));
-      });
     };
 
     const handleFullName = (e) => {
@@ -63,10 +67,7 @@ function Profile() {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then((response) => {
-          getAccount();
-          setAvatar(URL.createObjectURL(e.target.files[0]));
-        })
+        .then()
         .catch((err) => {
           console.log(err);
           console.log(err.response);
@@ -82,9 +83,7 @@ function Profile() {
       axios
         .put(window.DOMAIN + '/accounts/' + userId, data)
         .then((response) => {
-          getAccount();
           alert('Update profile successfully!');
-          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -196,6 +195,7 @@ function Profile() {
                     </div>
                     <div class="text-center">
                       {/* <img src={avatar} class="rounded" alt="avatar" style={{ width: 150, height: 150 }} /> */}
+
                       <label for="image">
                         <div style={{ backgroundColor: 'darkgray', borderRadius: 20, width: 310 }}>
                           <input
@@ -208,7 +208,11 @@ function Profile() {
                             hidden
                           />
                         </div>
-                        <img src={avatar} alt="avatar" style={{ width: 150, height: 150, borderRadius: '50%' }} />
+                        <img
+                          src={window.DOMAIN + '/' + profile.avatar}
+                          alt="avatar"
+                          style={{ width: 150, height: 150, borderRadius: '50%' }}
+                        />
                       </label>
                       <h4>{username}</h4>
                     </div>
@@ -231,7 +235,7 @@ function Profile() {
                           Email
                         </label>
                         <input
-                          type="text"
+                          type="email"
                           class="form-control"
                           placeholder="Email"
                           value={email}
@@ -262,12 +266,6 @@ function Profile() {
                         </a>
                       </div>
                     </form>
-                    <br></br>
-                    <div style={{ textAlign: 'center' }}>
-                      <a href="/" style={{ textDecoration: 'none' }}>
-                        Back to home
-                      </a>
-                    </div>
                   </div>
                 </div>
               </div>

@@ -16,11 +16,8 @@ function Class() {
   document.title = 'Class';
 
   useEffect(() => {
-    const getAllClassrooms = async (e) => {
-      await axios.get(window.DOMAIN + '/classrooms').then((response) => setClasses(response.data));
-    };
-    getAllClassrooms();
-  }, []);
+    axios.get(window.DOMAIN + '/classrooms').then((response) => setClasses(response.data));
+  }, [classes]);
 
   if (user == null) navigate('/login');
   else {
@@ -55,7 +52,6 @@ function Class() {
         )
         .then((response) => {
           alert('Create class successfuly!');
-          window.location.reload();
         })
         .catch((err) => {
           alert('Create new class failed!');
@@ -70,7 +66,6 @@ function Class() {
         .post(window.DOMAIN + '/classrooms/join/' + user.accountId, code)
         .then((response) => {
           alert('Join class successfuly!');
-          window.location.reload();
         })
         .catch((err) => {
           alert('Invalid class code!');
@@ -105,7 +100,6 @@ function Class() {
           })
           .then((response) => {
             alert('Adding members succesfully!');
-            window.location.reload();
           })
           .catch((err) => alert('Adding members failed!'));
       }
@@ -122,7 +116,6 @@ function Class() {
         })
         .then((response) => {
           alert('Your request have been send!');
-          window.location.reload();
         })
         .catch((err) => alert('Some errors have been found!'));
     };
@@ -153,7 +146,6 @@ function Class() {
           })
           .then((response) => {
             alert('Removing members succesfully!');
-            window.location.reload();
           })
           .catch((err) => alert('Removing members failed!'));
       }
@@ -168,9 +160,7 @@ function Class() {
               accountId: [user.accountId],
             },
           })
-          .then((response) => {
-            window.location.reload();
-          })
+          .then((response) => {})
           .catch((err) => alert('Some errors was found!'));
       }
     };
@@ -182,7 +172,6 @@ function Class() {
           .delete(window.DOMAIN + '/classrooms/' + classId)
           .then((response) => {
             alert('Delete class successfully!');
-            window.location.reload();
           })
           .catch((err) => alert('Delete class failed!'));
       }
@@ -274,7 +263,7 @@ function Class() {
                   </div>
 
                   <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary rounded submit px-3">
+                    <button type="submit" class="btn btn-primary rounded submit px-3" data-bs-dismiss="modal">
                       Create
                     </button>
                     <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
@@ -347,7 +336,7 @@ function Class() {
                   </div>
 
                   <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary rounded submit px-3">
+                    <button type="submit" class="btn btn-primary rounded submit px-3" data-bs-dismiss="modal">
                       Join
                     </button>
                     <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">
@@ -403,7 +392,7 @@ function Class() {
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" onClick={deleteClass}>
+                    <a class="dropdown-item" onClick={deleteClass} href="javascript:;">
                       Delete this class
                     </a>
                   </li>
@@ -413,7 +402,7 @@ function Class() {
               element = (
                 <div>
                   <li>
-                    <a class="dropdown-item" onClick={leaveThisTeam}>
+                    <a class="dropdown-item" onClick={leaveThisTeam} href="javascript:;">
                       Leave this team
                     </a>
                   </li>
@@ -439,7 +428,7 @@ function Class() {
                       <div class="dropdown" style={{ float: 'right', display: 'inline-block' }}>
                         <a
                           class=""
-                          href="#"
+                          href="javascript:;"
                           role="button"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
@@ -454,6 +443,7 @@ function Class() {
                         <ul class="dropdown-menu">
                           <li>
                             <a
+                              href="javascript:;"
                               class="dropdown-item"
                               onClick={() => {
                                 manageClass();

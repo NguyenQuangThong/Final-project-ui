@@ -24,7 +24,7 @@ const publicRoutes = [
   { path: '/class', component: Class, layout: HeaderOnly },
   { path: '/login', component: Login, layout: null },
   { path: '/signup', component: Signup, layout: null },
-  { path: '/profile', component: Profile, layout: null },
+  { path: '/profile', component: Profile, layout: HeaderOnly },
   { path: '/class/detail', component: ClassDetail, layout: ClassDetailLayout },
   { path: '/class/manage', component: ClassManage, layout: HeaderOnly },
   { path: '/class/file', component: File, layout: ClassDetailHeader },
