@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function Home() {
   document.title = 'Home page';
@@ -25,6 +26,7 @@ function Home() {
             alt=""
           ></img>
         </div>
+        <Link to="/chat">Chat</Link>
       </div>
     </div>
   );
