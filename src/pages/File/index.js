@@ -55,6 +55,7 @@ function File() {
         })
         .then((response) => {
           alert('Upload file successfully!');
+          document.getElementById('file').value = null;
         })
         .catch((err) => {
           console.log(err);

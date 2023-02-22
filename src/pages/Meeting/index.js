@@ -10,6 +10,9 @@ import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faLinkSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
+import { text } from '@fortawesome/fontawesome-svg-core';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 function Meeting() {
   var peerConnection;
@@ -22,11 +25,11 @@ function Meeting() {
   let count = 0;
   let count1 = 0;
   const [linkTag, setLinkTag] = useState(
-    <h1 style={{ margin: 5 }}>
+    <h3 style={{ margin: 5 }}>
       <Link target="_blank" rel="noopener noreferrer" to="/other-profile" style={{ textDecoration: 'none' }}>
         Participant
       </Link>
-    </h1>,
+    </h3>,
   );
 
   function leave() {
@@ -38,6 +41,7 @@ function Meeting() {
     const tracks = mediaStream.getTracks();
     tracks.forEach((track) => track.stop());
     localStorage.removeItem('otherId');
+    disconnect();
     navigate('/class/detail');
   }
 
@@ -358,75 +362,148 @@ function Meeting() {
     document.getElementById('local').captureStream().getAudioTracks()[0].enabled = true;
   };
 
+  const [stompClient, setStompClient] = useState(null);
+  const [name, setName] = useState(user.username);
+  const [text, setText] = useState(null);
+  const [connectButton, setConnectButton] = useState(true);
+  const [disConnectButton, setDisConnectButton] = useState(true);
+
+  useEffect(() => {
+    connect();
+  }, []);
+
+  function setConnected(value) {
+    setConnectButton(!value);
+    setDisConnectButton(!value);
+  }
+
+  function setUser(e) {
+    setName(e.target.value);
+  }
+
+  function setMessage(e) {
+    setText(e.target.value);
+  }
+
+  function connect() {
+    var connection = Stomp.over(new SockJS('http://localhost:8080/gs-guide-websocket'));
+    setStompClient(connection);
+    connection.connect({}, function (frame) {
+      setConnected(true);
+      console.log('Connected: ' + frame);
+      connection.subscribe('/topic/messages', function (messageOutput) {
+        showMessageOutput(JSON.parse(messageOutput.body));
+      });
+    });
+  }
+
+  function disconnect() {
+    if (stompClient != null) {
+      stompClient.disconnect();
+    }
+    setConnected(false);
+    console.log('Disconnected');
+  }
+
+  function sendMessage() {
+    stompClient.send('/app/chat', {}, JSON.stringify({ from: name, text: text }));
+    document.getElementById('textarea').value = null;
+  }
+
+  function showMessageOutput(messageOutput) {
+    var response = document.getElementById('response');
+    var p = document.createElement('p');
+    p.style.wordWrap = 'break-word';
+    p.appendChild(
+      document.createTextNode(messageOutput.from + ': ' + messageOutput.text + ' (' + messageOutput.time + ')'),
+    );
+    response.appendChild(p);
+  }
+
   return (
     <div className="container">
-      <div className="container">
-        <div className="row">
-          <div className="col" style={{ textAlign: 'center' }}>
-            <h1>Welcome to Group_{className}</h1>
-            <br></br>
-            {/* <h3 style={{ margin: 5 }}>{otherUser}</h3> */}
-            {linkTag}
-            <video
-              style={{ width: '150vh', height: '50vh' }}
-              id="remote"
-              poster="https://img.icons8.com/fluent/48/000000/person-male.png"
-              autoPlay
-            ></video>
+      <div className="col" style={{ textAlign: 'center' }}>
+        <h1>Welcome to Group_{className}</h1>
+      </div>
+      <br></br>
+      <div className="row" style={{ width: 'auto', height: '700px' }}>
+        <div className="col-8" style={{ textAlign: 'center' }}>
+          {linkTag}
+          <video
+            style={{ width: '100vh', height: '50vh' }}
+            id="remote"
+            poster="https://img.icons8.com/fluent/48/000000/person-male.png"
+            autoPlay
+          ></video>
+
+          <h3 style={{ margin: 5 }}>{user.username}(You)</h3>
+          <video
+            style={{ width: 'auto', height: '20vh' }}
+            id="local"
+            poster="https://img.icons8.com/fluent/48/000000/person-male.png"
+            autoPlay
+            muted
+          ></video>
+
+          <div style={{ display: 'inline-block', textAlign: 'center' }} className="container">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                disPlayLocalVideoStream(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={() => disPlayLocalScreenStream(false)}>
+              <FontAwesomeIcon icon={faShareFromSquare}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={turnOffScreenShare}>
+              <FontAwesomeIcon icon={faLinkSlash}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={turnOffCamera}>
+              <FontAwesomeIcon icon={faVideoSlash}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={turnOnCamera}>
+              <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={turnOffMicro}>
+              <FontAwesomeIcon icon={faMicrophoneSlash}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={turnOnMicro}>
+              <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
+            </button>
+            &nbsp;
+            <button id="leaveButton" onClick={leave} className="btn btn-primary">
+              <FontAwesomeIcon icon={faPhoneSlash}></FontAwesomeIcon>
+            </button>
           </div>
         </div>
-        <div className="row">
-          <div className="col" style={{ textAlign: 'center' }}>
-            <div>
-              <h3 style={{ margin: 5 }}>{user.username}(You)</h3>
-              <video
-                style={{ width: 'auto', height: '20vh' }}
-                id="local"
-                poster="https://img.icons8.com/fluent/48/000000/person-male.png"
-                autoPlay
-                muted
-              ></video>
+        <div className="col-4" style={{ textAlign: 'center' }}>
+          <h3>Chat</h3>
+          <br></br>
+          <div style={{ border: '1px solid black', height: '80%' }}>
+            <p id="response" style={{ float: 'left' }}></p>
+          </div>
+          <br></br>
+          <div style={{ border: '1px solid white', height: '50px', marginLeft: 0 }}>
+            <div className="row">
+              <div className="col-8">
+                <textarea style={{ width: '100%', height: '50px' }} onChange={setMessage} id="textarea"></textarea>
+              </div>
+              <div className="col-4">
+                <button style={{ width: '100%', height: '50px' }} onClick={sendMessage}>
+                  Send
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div style={{ display: 'inline-block', textAlign: 'center' }} className="container">
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            disPlayLocalVideoStream(true);
-          }}
-        >
-          <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={() => disPlayLocalScreenStream(false)}>
-          <FontAwesomeIcon icon={faShareFromSquare}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={turnOffScreenShare}>
-          <FontAwesomeIcon icon={faLinkSlash}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={turnOffCamera}>
-          <FontAwesomeIcon icon={faVideoSlash}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={turnOnCamera}>
-          <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={turnOffMicro}>
-          <FontAwesomeIcon icon={faMicrophoneSlash}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button className="btn btn-primary" onClick={turnOnMicro}>
-          <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
-        </button>
-        &nbsp;
-        <button id="leaveButton" onClick={leave} className="btn btn-primary">
-          <FontAwesomeIcon icon={faPhoneSlash}></FontAwesomeIcon>
-        </button>
       </div>
     </div>
   );
