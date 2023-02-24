@@ -28,7 +28,7 @@ function Chat() {
   }
 
   function connect() {
-    var connection = Stomp.over(new SockJS('https://localhost:8080/gs-guide-websocket'));
+    var connection = Stomp.over(new SockJS('http://localhost:8080/gs-guide-websocket'));
     setStompClient(connection);
     connection.connect({}, function (frame) {
       setConnected(true);

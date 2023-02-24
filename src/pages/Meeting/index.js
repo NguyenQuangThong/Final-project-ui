@@ -10,7 +10,6 @@ import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faLinkSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
-import { text } from '@fortawesome/fontawesome-svg-core';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 
@@ -21,9 +20,13 @@ function Meeting() {
   let user = JSON.parse(localStorage.getItem('user'));
   let classroom = JSON.parse(localStorage.getItem('classroom'));
   let className = classroom.className;
-  const [otherUser, setOtherUser] = useState('Other');
+
   let count = 0;
   let count1 = 0;
+  let stompClient = null;
+  let name = user.username;
+  let text = null;
+
   const [linkTag, setLinkTag] = useState(
     <h3 style={{ margin: 5 }}>
       <Link target="_blank" rel="noopener noreferrer" to="/other-profile" style={{ textDecoration: 'none' }}>
@@ -48,6 +51,7 @@ function Meeting() {
   var signalingWebsocket = new WebSocket('ws://localhost:8080/signal');
 
   signalingWebsocket.onmessage = function (msg) {
+    console.log(count1);
     if (Object.keys(JSON.parse(msg.data)).length === 6 && count < 1) {
       localStorage.setItem('otherId', JSON.parse(msg.data).accountId);
       count++;
@@ -132,6 +136,7 @@ function Meeting() {
    */
 
   const disPlayLocalVideoStream = async (firstTime) => {
+    connect();
     count1++;
     signalingWebsocket.onopen = init();
 
@@ -362,36 +367,15 @@ function Meeting() {
     document.getElementById('local').captureStream().getAudioTracks()[0].enabled = true;
   };
 
-  const [stompClient, setStompClient] = useState(null);
-  const [name, setName] = useState(user.username);
-  const [text, setText] = useState(null);
-  const [connectButton, setConnectButton] = useState(true);
-  const [disConnectButton, setDisConnectButton] = useState(true);
-
-  useEffect(() => {
-    connect();
-  }, []);
-
-  function setConnected(value) {
-    setConnectButton(!value);
-    setDisConnectButton(!value);
-  }
-
-  function setUser(e) {
-    setName(e.target.value);
-  }
-
   function setMessage(e) {
-    setText(e.target.value);
+    text = document.getElementById('textarea').value;
   }
 
   function connect() {
-    var connection = Stomp.over(new SockJS('http://localhost:8080/gs-guide-websocket'));
-    setStompClient(connection);
-    connection.connect({}, function (frame) {
-      setConnected(true);
+    stompClient = Stomp.over(new SockJS('http://localhost:8080/gs-guide-websocket'));
+    stompClient.connect({}, function (frame) {
       console.log('Connected: ' + frame);
-      connection.subscribe('/topic/messages', function (messageOutput) {
+      stompClient.subscribe('/topic/messages', function (messageOutput) {
         showMessageOutput(JSON.parse(messageOutput.body));
       });
     });
@@ -401,7 +385,6 @@ function Meeting() {
     if (stompClient != null) {
       stompClient.disconnect();
     }
-    setConnected(false);
     console.log('Disconnected');
   }
 
@@ -467,7 +450,7 @@ function Meeting() {
               <FontAwesomeIcon icon={faVideoSlash}></FontAwesomeIcon>
             </button>
             &nbsp;
-            <button className="btn btn-primary" onClick={turnOnCamera}>
+            <button className="btn btn-primary" onCnlick={turnOnCamera}>
               <FontAwesomeIcon icon={faVideo}></FontAwesomeIcon>
             </button>
             &nbsp;
@@ -487,17 +470,25 @@ function Meeting() {
         <div className="col-4" style={{ textAlign: 'center' }}>
           <h3>Chat</h3>
           <br></br>
-          <div style={{ border: '1px solid black', height: '80%' }}>
+          <div style={{ border: '1px solid black', height: '80%', borderRadius: '10px' }} className="container">
             <p id="response" style={{ float: 'left' }}></p>
           </div>
           <br></br>
           <div style={{ border: '1px solid white', height: '50px', marginLeft: 0 }}>
             <div className="row">
               <div className="col-8">
-                <textarea style={{ width: '100%', height: '50px' }} onChange={setMessage} id="textarea"></textarea>
+                <textarea
+                  style={{ width: '100%', height: '50px', borderRadius: '10px' }}
+                  onChange={setMessage}
+                  id="textarea"
+                ></textarea>
               </div>
               <div className="col-4">
-                <button style={{ width: '100%', height: '50px' }} onClick={sendMessage}>
+                <button
+                  style={{ width: '100%', height: '50px' }}
+                  onClick={sendMessage}
+                  className="form-control btn btn-primary rounded submit px-3"
+                >
                   Send
                 </button>
               </div>
